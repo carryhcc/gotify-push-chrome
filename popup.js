@@ -1,3 +1,8 @@
+// popup.js
+
+// 全局变量，用于存储当前语言的翻译
+let i18nStrings = {};
+
 // 加载配置并更新界面
 function loadConfig() {
   // gotifyTokens 预期为 [{remark: '...', token: '...'}, ...]
@@ -41,22 +46,22 @@ function sendMessage() {
   
   // 验证输入
   if (!selectedToken) {
-    showStatus('未找到Token，请检查配置', 'error');
+    showStatus(i18nStrings.statusNoToken, 'error');
     return;
   }
   
   if (!title) {
-    showStatus('请输入标题', 'error');
+    showStatus(i18nStrings.statusNoTitle, 'error');
     return;
   }
   
   if (!message) {
-    showStatus('请输入内容', 'error');
+    showStatus(i18nStrings.statusNoMessage, 'error');
     return;
   }
   
   // 显示正在发送
-  showStatus('正在发送...', 'success');
+  showStatus(i18nStrings.statusSending, 'success');
   
   // 获取服务器地址
   chrome.storage.sync.get('gotifyUrl', function(result) {
@@ -96,22 +101,22 @@ function sendMessage() {
       return response.json();
     })
     .then(data => {
-      showStatus('消息发送成功!', 'success');
+      showStatus(i18nStrings.statusSuccess, 'success');
       // 清空消息内容，保留标题
       document.getElementById('messageInput').value = '';
     })
     .catch(error => {
       console.error('Gotify请求失败:', error); // 保留关键错误日志
-      let errorMsg = '发送失败，请检查网络、URL或Token。';
+      let errorMsg = i18nStrings.statusErrorGeneric;
       if (error.message) {
         if (error.message.includes('Failed to fetch')) {
-          errorMsg = '发送失败：无法连接到服务器。请检查URL配置或CORS策略。';
+          errorMsg = i18nStrings.statusErrorFetch;
         } else if (error.message.includes('403')) {
-          errorMsg = '发送失败：403 Forbidden，Token无效或权限不足。';
+          errorMsg = i18nStrings.statusError403;
         } else if (error.message.includes('404')) {
-          errorMsg = '发送失败：404 Not Found，请检查服务器URL地址是否正确。';
+          errorMsg = i18nStrings.statusError404;
         } else {
-          errorMsg = `发送失败: ${error.message}`;
+          errorMsg = `${i18nStrings.statusErrorPrefix} ${error.message}`;
         }
       }
       showStatus(errorMsg, 'error');
@@ -146,16 +151,21 @@ function openOptions() {
 }
 
 // 页面加载时加载配置并绑定事件监听器
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+  // 1. 初始化 i18n 并获取翻译
+  const { strings } = await initI18n();
+  i18nStrings = strings; // 存储翻译
+  
+  // 2. 加载配置
   loadConfig();
   
-  // 绑定发送按钮事件
+  // 3. 绑定发送按钮事件
   document.querySelector('.send-btn').addEventListener('click', sendMessage);
   
-  // 绑定设置按钮事件
+  // 4. 绑定设置按钮事件
   document.querySelector('.options-btn').addEventListener('click', openOptions);
   
-  // 绑定配置链接事件
+  // 5. 绑定配置链接事件
   document.getElementById('configLink').addEventListener('click', function(e) {
     e.preventDefault();
     openOptions();

@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Gotify Push Tool",
+    "description": "The name of the extension."
+  },
+  "extDesc": {
+    "message": "A Chrome extension for sending push messages to a Gotify server",
+    "description": "The description of the extension."
+  }
+}

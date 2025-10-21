@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="en"> <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gotify推送工具 - 配置</title>
+  <title data-i18n="optionsTitle">Gotify Push Tool - Settings</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -32,13 +31,25 @@
       font-size: 15px;
     }
     input[type="text"],
-    input[type="url"] {
+    input[type="url"],
+    select { /* 添加 select 样式 */
       width: 100%;
       padding: 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 14px;
       box-sizing: border-box;
+    }
+    
+    /* 语言切换器样式 */
+    .lang-switcher-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lang-switcher-group label {
+      margin-bottom: 0;
+      flex-shrink: 0; /* 防止label被压缩 */
     }
     
     /* Token 列表样式 */
@@ -131,29 +142,40 @@
   </style>
 </head>
 <body>
-  <h1>Gotify推送工具配置</h1>
-  
+  <h1 data-i18n="optionsTitle">Gotify推送工具配置</h1>
+
   <div class="form-group">
-    <label for="gotifyUrl">Gotify服务器地址:</label>
-    <input type="url" id="gotifyUrl" placeholder="http://127.0.0.1:8080">
+    <div class="lang-switcher-group">
+      <label for="langSwitcher" data-i18n="langLabel">语言:</label>
+      <select id="langSwitcher">
+        <option value="en">English</option>
+        <option value="zh_CN">简体中文</option>
+      </select>
+    </div>
   </div>
   
   <div class="form-group">
-    <label>Gotify Token列表:</label>
+    <label for="gotifyUrl" data-i18n="serverAddressLabel">Gotify服务器地址:</label>
+    <input type="url" id="gotifyUrl" data-i18n-placeholder="serverAddressPlaceholder" placeholder="http://127.0.0.1:8080">
+  </div>
+  
+  <div class="form-group">
+    <label data-i18n="tokenListLabel">Gotify Token列表:</label>
     <div id="tokenListHeader">
-      <div class="remark-header">推送环境</div>
-      <div class="token-header">Token (必填)</div>
-      <div class="action-header">操作</div>
+      <div class="remark-header" data-i18n="tokenHeaderRemark">推送环境</div>
+      <div class="token-header" data-i18n="tokenHeaderToken">Token (必填)</div>
+      <div class="action-header" data-i18n="tokenHeaderAction">操作</div>
     </div>
     <div id="tokenList">
       </div>
-    <button class="add-btn">添加Token</button>
+    <button class="add-btn" data-i18n="addTokenBtn">添加Token</button>
   </div>
   
-  <button class="save-btn">保存配置</button>
+  <button class="save-btn" data-i18n="saveBtn">保存配置</button>
   
-  <div id="status" class="status">配置已保存</div>
+  <div id="status" class="status" data-i18n="saveSuccessMsg">配置已保存</div>
 
+  <script src="i18n.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

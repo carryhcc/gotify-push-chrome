@@ -1,3 +1,8 @@
+// options.js
+
+// 全局变量，用于存储当前语言的翻译
+let i18nStrings = {};
+
 // 加载已保存的配置
 function loadOptions() {
   chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens'], function(result) {
@@ -27,10 +32,15 @@ function addTokenToList(tokenInfo = { remark: '', token: '' }) {
   const tokenItem = document.createElement('div');
   tokenItem.className = 'token-item';
   
+  // 使用 i18nStrings 获取占位符和按钮文本
+  const remarkPlaceholder = i18nStrings.tokenRemarkPlaceholder || 'Environment';
+  const tokenPlaceholder = i18nStrings.tokenTokenPlaceholder || 'Enter Token...';
+  const deleteText = i18nStrings.deleteBtnText || 'Delete';
+  
   tokenItem.innerHTML = `
-    <input type="text" class="remark-input" placeholder="推送环境" value="${tokenInfo.remark || ''}">
-    <input type="text" class="token-input" placeholder="输入Token..." value="${tokenInfo.token || ''}">
-    <button class="delete-btn" onclick="deleteToken(this)">删除</button>
+    <input type="text" class="remark-input" placeholder="${remarkPlaceholder}" value="${tokenInfo.remark || ''}">
+    <input type="text" class="token-input" placeholder="${tokenPlaceholder}" value="${tokenInfo.token || ''}">
+    <button class="delete-btn">${deleteText}</button>
   `;
   
   tokenList.appendChild(tokenItem);
@@ -61,12 +71,14 @@ function saveOptions() {
   const gotifyUrl = document.getElementById('gotifyUrl').value.trim();
   const tokenItems = document.querySelectorAll('#tokenList .token-item');
   
+  const defaultRemarkPrefix = i18nStrings.defaultRemarkPrefix || 'Token';
+  
   const gotifyTokens = Array.from(tokenItems)
     .map(item => {
       const remark = item.querySelector('.remark-input').value.trim();
       const token = item.querySelector('.token-input').value.trim();
       // 如果备注为空，但token有效，则使用token的前几位作为默认备注
-      const finalRemark = remark || (token ? `Token (${token.substring(0, 6)}...)` : '');
+      const finalRemark = remark || (token ? `${defaultRemarkPrefix} (${token.substring(0, 6)}...)` : '');
       
       return {
         remark: finalRemark,
@@ -77,7 +89,7 @@ function saveOptions() {
   
   // 如果没有非空token，显示警告
   if (gotifyTokens.length === 0) {
-    alert('请至少添加一个有效的Token');
+    alert(i18nStrings.alertMinOneToken || 'Please add at least one valid Token');
     return;
   }
   
@@ -89,7 +101,8 @@ function saveOptions() {
     // 显示保存成功消息
     const status = document.getElementById('status');
     status.className = 'status success';
-    status.textContent = '配置已保存';
+    // 使用翻译
+    status.textContent = i18nStrings.saveSuccessMsg || 'Settings saved';
     
     // 3秒后隐藏消息
     setTimeout(function() {
@@ -99,13 +112,35 @@ function saveOptions() {
 }
 
 // 页面加载时加载配置并绑定事件监听器
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+  // 1. 初始化 i18n 并获取当前语言和翻译
+  const { lang, strings } = await initI18n();
+  i18nStrings = strings; // 将翻译存储在全局变量中
+  
+  // 2. 设置语言切换器的当前值
+  const langSwitcher = document.getElementById('langSwitcher');
+  if (langSwitcher) {
+    langSwitcher.value = lang;
+    
+    // 3. 绑定语言切换器事件
+    langSwitcher.addEventListener('change', (e) => {
+      const newLang = e.target.value;
+      chrome.storage.sync.set({ userLang: newLang }, () => {
+        // 语言保存后，重新应用翻译
+        i18nStrings = applyTranslations(newLang);
+        // 重新加载选项，以更新动态添加的元素（如token行）的占位符
+        loadOptions();
+      });
+    });
+  }
+
+  // 4. 加载其他配置
   loadOptions();
   
-  // 绑定添加Token按钮事件
+  // 5. 绑定添加Token按钮事件
   document.querySelector('.add-btn').addEventListener('click', addToken);
   
-  // 绑定保存配置按钮事件
+  // 6. 绑定保存配置按钮事件
   document.querySelector('.save-btn').addEventListener('click', saveOptions);
 });
 

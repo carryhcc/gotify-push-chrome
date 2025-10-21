@@ -1,33 +1,37 @@
-# Gotify推送工具 - Chrome插件
+# Gotify Push Tool - Chrome Extension
 
-一个用于向Gotify服务器发送推送消息的Chrome浏览器插件。
+[View in Chinese (简体中文)](README_zh-CN.md)
 
-## 功能特性
+A Chrome browser extension for sending push messages to a Gotify server.
 
-- 配置Gotify服务器地址和多个Token
-- 快速发送自定义标题和内容的推送消息
-- 支持选择不同的Token进行消息发送
+## Features
 
-## 安装方法
+- Configure your Gotify server URL and multiple Tokens
+- Quickly send push messages with custom titles and content
+- Support for selecting different Tokens for sending messages
+- Multi-language support (English, Simplified Chinese) with a manual switcher in settings
 
-1. 在Chrome浏览器中访问 `chrome://extensions/`
-2. 开启右上角的「开发者模式」
-3. 点击「加载已解压的扩展程序」
-4. 选择本项目的根目录
+## Installation
 
-## 使用说明
+1. Visit `chrome://extensions/` in your Chrome browser
+2. Enable "Developer mode" in the top right corner
+3. Click "Load unpacked"
+4. Select the root directory of this project
 
-1. 点击插件图标，然后点击「设置」按钮配置Gotify服务器地址和Token
-2. 返回主界面，选择要使用的Token
-3. 输入推送标题和内容
-4. 点击「发送」按钮完成推送
+## How to Use
 
-## 技术说明
+1. Click the extension icon, then click the "Settings" button to configure your Gotify server URL and Token(s)
+2. Return to the main popup, select the Token (Environment) you want to use
+3. Enter the push title and content
+4. Click the "Send" button to push the message
 
-- 使用Chrome扩展Manifest V3
-- 使用Chrome Storage API存储配置
-- 使用Fetch API发送HTTP请求
+## Technical Details
 
-## 开发调试
+- Uses Chrome Extension Manifest V3
+- Uses Chrome Storage API to store configuration
+- Uses Fetch API to send HTTP requests
+- Implements a manual i18n system for UI language switching
 
-在开发过程中，可以使用Chrome开发者工具查看扩展的日志和错误信息。对于弹出窗口的调试，可以右键点击弹出窗口并选择「检查」。
+## Development & Debugging
+
+During development, you can use Chrome Developer Tools to view the extension's logs and errors. To debug the popup, right-click on the popup window and select "Inspect".
