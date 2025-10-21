@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gotify推送工具 - 配置</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0 auto;
+      padding: 20px;
+      max-width: 700px; /* 稍微加宽以容纳备注 */
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 25px;
+    }
+    .form-group {
+      margin-bottom: 25px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: #555;
+      font-size: 15px;
+    }
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    /* Token 列表样式 */
+    #tokenListHeader {
+      display: flex;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #666;
+    }
+    #tokenListHeader .remark-header {
+      flex: 1;
+      padding-left: 5px;
+    }
+    #tokenListHeader .token-header {
+      flex: 2;
+      padding-left: 5px;
+    }
+    #tokenListHeader .action-header {
+      width: 60px; /* 匹配删除按钮宽度 */
+      text-align: center;
+    }
+
+    .token-item {
+      display: flex;
+      margin-bottom: 10px;
+      align-items: center;
+      gap: 10px;
+    }
+    .token-item .remark-input {
+      flex: 1; /* 备注占 1 份 */
+    }
+    .token-item .token-input {
+      flex: 2; /* Token 占 2 份，更宽 */
+    }
+    .token-item input {
+      /* 宽度由 flex 控制 */
+      width: auto;
+    }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      width: 60px; /* 固定宽度 */
+    }
+    .delete-btn:hover {
+      background-color: #d32f2f;
+    }
+    .add-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .add-btn:hover {
+      background-color: #45a049;
+    }
+    .save-btn {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .save-btn:hover {
+      background-color: #1976D2;
+    }
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+      text-align: center;
+    }
+    .success {
+      background-color: #e8f5e8;
+      color: #2e7d2e;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gotify推送工具配置</h1>
+  
+  <div class="form-group">
+    <label for="gotifyUrl">Gotify服务器地址:</label>
+    <input type="url" id="gotifyUrl" placeholder="http://127.0.0.1:8080">
+  </div>
+  
+  <div class="form-group">
+    <label>Gotify Token列表:</label>
+    <div id="tokenListHeader">
+      <div class="remark-header">推送环境</div>
+      <div class="token-header">Token (必填)</div>
+      <div class="action-header">操作</div>
+    </div>
+    <div id="tokenList">
+      </div>
+    <button class="add-btn">添加Token</button>
+  </div>
+  
+  <button class="save-btn">保存配置</button>
+  
+  <div id="status" class="status">配置已保存</div>
+
+  <script src="options.js"></script>
+</body>
+</html>

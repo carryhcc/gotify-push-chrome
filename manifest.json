@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Gotify推送工具",
+  "version": "1.0",
+  "description": "用于向Gotify服务器发送推送消息的Chrome插件",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.svg",
+      "48": "icons/icon48.svg",
+      "128": "icons/icon128.svg"
+    }
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://localhost:*/*",
+    "http://127.0.0.1:*/*",
+    "http://*:*/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.svg",
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  }
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gotify推送工具</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      width: 380px; /* 稍微加宽 */
+      background-color: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+      font-size: 14px;
+    }
+    select,
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background-color: #fff;
+    }
+    select {
+      /* 确保select有合适的默认高度 */
+      height: 40px;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .send-btn {
+      flex: 1;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .send-btn:hover {
+      background-color: #45a049;
+    }
+    .options-btn {
+      background-color: #f0f0f0;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.2s;
+    }
+    .options-btn:hover {
+      background-color: #e0e0e0;
+    }
+    .status {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      display: none;
+      text-align: center;
+    }
+    .success {
+      background-color: #e8f5e8;
+      color: #2e7d2e;
+      display: block;
+    }
+    .error {
+      background-color: #ffebee;
+      color: #c62828;
+      display: block;
+    }
+    .no-config {
+      padding: 20px;
+      background-color: #fff3cd;
+      color: #856404;
+      border-radius: 5px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .no-config a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .no-config a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h2>发送Gotify推送</h2>
+  
+  <div id="configForm">
+    <div class="form-group">
+      <label for="tokenSelect">推送环境:</label>
+      <select id="tokenSelect"></select>
+    </div>
+    
+    <div class="form-group">
+      <label for="titleInput">标题:</label>
+      <input type="text" id="titleInput" placeholder="输入推送标题...">
+    </div>
+    
+    <div class="form-group">
+      <label for="messageInput">内容:</label>
+      <textarea id="messageInput" placeholder="输入推送内容..."></textarea>
+    </div>
+    
+    <div class="actions">
+      <button class="send-btn">发送</button>
+      <button class="options-btn">设置</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+  </div>
+  
+  <div id="noConfig" class="no-config" style="display: none;">
+    请先<a href="#" id="configLink">配置</a>Gotify服务器地址和Token
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
