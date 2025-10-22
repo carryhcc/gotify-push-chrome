@@ -35,3 +35,7 @@
 ## 开发调试
 
 在开发过程中，可以使用Chrome开发者工具查看扩展的日志和错误信息。对于弹出窗口的调试，可以右键点击弹出窗口并选择「检查」。
+
+403错误处理
+检查GOTIFY_SERVER_CORS_ALLOWORIGINS配置项是否正确设置。
+docker GOTIFY_SERVER_CORS_ALLOWORIGINS = - ".*"
