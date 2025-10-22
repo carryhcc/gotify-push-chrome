@@ -77,9 +77,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 // 4. 后台发送推送的函数 (*** 此处已更新 ***)
 async function sendPushFromBackground(title, message) {
-  // 从存储中获取配置 (*** 新增 'contextMenuPriority' ***)
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuPriority'], (result) => {
-    const { gotifyUrl, gotifyTokens, contextMenuPriority } = result;
+  // 从存储中获取配置 (*** 新增 'contextMenuPriority' 和 'contextMenuToken' ***)
+  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuPriority', 'contextMenuToken'], (result) => {
+    const { gotifyUrl, gotifyTokens, contextMenuPriority, contextMenuToken } = result;
 
     // 检查配置
     if (!gotifyUrl || !gotifyTokens || gotifyTokens.length === 0) {
@@ -95,8 +95,14 @@ async function sendPushFromBackground(title, message) {
     }
     // --- 新增结束 ---
 
-    // 默认使用第一个Token
-    const firstToken = gotifyTokens[0].token;
+    // 使用配置的token，如果没有配置或找不到对应token，则使用第一个token
+    let selectedToken = gotifyTokens[0].token;
+    if (contextMenuToken) {
+      const foundToken = gotifyTokens.find(tokenInfo => tokenInfo.token === contextMenuToken);
+      if (foundToken) {
+        selectedToken = foundToken.token;
+      }
+    }
     const apiUrl = (gotifyUrl || '').replace(/\/$/, '') + '/message';
 
     // 准备数据
@@ -111,7 +117,7 @@ async function sendPushFromBackground(title, message) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Gotify-Key': firstToken
+        'X-Gotify-Key': selectedToken
       },
       body: JSON.stringify(data)
     })

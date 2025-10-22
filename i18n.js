@@ -42,6 +42,7 @@ const translations = {
     'defaultTitle': 'default',
     'contextMenuLabel': 'Enable Right-Click Send',
     // --- 新增内容 (New) ---
+    'contextMenuTokenLabel': 'Right-Click Environment:',
     'contextMenuPriorityLabel': 'Right-Click Priority:',
     'priorityPlaceholder': 'Priority (0-10, default 5)',
     'popupPriorityLabel': 'Priority:',
@@ -95,6 +96,7 @@ const translations = {
     'defaultTitle': '默认',
     'contextMenuLabel': '开启右键发送',
     // --- 新增内容 (New) ---
+    'contextMenuTokenLabel': '右键推送环境选择:',
     'contextMenuPriorityLabel': '右键推送优先级:',
     'priorityPlaceholder': '优先级 (0-10, 默认 5)',
     'popupPriorityLabel': '优先级:',
