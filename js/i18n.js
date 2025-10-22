@@ -52,7 +52,13 @@ const translations = {
     'priorityHighest': 'Highest',
     'priorityOption0': '0 (Lowest)',
     'priorityOption5': '5 (Default)',
-    'priorityOption10': '10 (Highest)'
+    'priorityOption10': '10 (Highest)',
+    'notificationPushSuccess': 'Gotify Push Successful',
+    'notificationPushFailed': 'Gotify Push Failed',
+    'notificationNoConfig': 'Please configure server and Token in plugin settings first',
+    'notificationErrorPrefix': 'Error: ',
+    'notificationErrorSuffix': '. Please check network, URL, or Token.',
+    'notificationTitlePrefix': 'Title: '
   },
   'zh_CN': {
     'langName': '简体中文',
@@ -104,7 +110,13 @@ const translations = {
     'priorityHighest': '最高',
     'priorityOption0': '0 (最低)',
     'priorityOption5': '5 (默认)',
-    'priorityOption10': '10 (最高)'
+    'priorityOption10': '10 (最高)',
+    'notificationPushSuccess': 'Gotify 推送成功',
+    'notificationPushFailed': 'Gotify 推送失败',
+    'notificationNoConfig': '请先在插件设置中配置服务器和Token',
+    'notificationErrorPrefix': '错误: ',
+    'notificationErrorSuffix': '. 请检查网络、URL或Token。',
+    'notificationTitlePrefix': '标题: '
   }
 };
 
