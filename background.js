@@ -1,18 +1,68 @@
 // background.js
 
-// 1. 创建右键菜单
-// 使用 chrome.i18n.getMessage 来获取本地化的菜单标题
 const CONTEXT_MENU_ID = "SEND_TO_GOTIFY";
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: CONTEXT_MENU_ID,
-    title: chrome.i18n.getMessage("contextMenuTitle"),
-    contexts: ["selection"] // 只在选中文本时显示
+// 封装创建菜单的函数
+function createContextMenu() {
+  // *** 修复 ***
+  // 1. 先尝试移除已存在的菜单，防止 'onInstalled' 或重载时出错
+  // 2. 在移除的回调中（无论成功还是失败），再创建新菜单
+  // 这种 "remove-then-create" 模式确保了操作的幂等性（Idempotency）
+  chrome.contextMenus.remove(CONTEXT_MENU_ID, () => {
+    // 忽略 'lastError' (如果菜单不存在，移除会报错，这是正常的)
+    void chrome.runtime.lastError;
+    
+    // 移除后，创建新的菜单
+    chrome.contextMenus.create({
+      id: CONTEXT_MENU_ID,
+      title: chrome.i18n.getMessage("contextMenuTitle"),
+      contexts: ["selection"] // 只在选中文本时显示
+    });
   });
+}
+
+// 封装移除菜单的函数 (这个函数是正确的)
+function removeContextMenu() {
+  // 尝试移除，如果不存在会报错，我们忽略该错误
+  chrome.contextMenus.remove(CONTEXT_MENU_ID, () => {
+    // void chrome.runtime.lastError 是一种忽略错误的常用技巧
+    void chrome.runtime.lastError;
+  });
+}
+
+// 1. 插件启动时(包括安装和更新)，根据存储的设置初始化菜单
+// onInstalled 在安装/更新时触发，onStartup 在浏览器启动时触发
+function initializeContextMenu() {
+  chrome.storage.sync.get('contextMenuEnabled', (result) => {
+    if (result.contextMenuEnabled) {
+      createContextMenu();
+    } else {
+      removeContextMenu();
+    }
+  });
+}
+
+chrome.runtime.onStartup.addListener(initializeContextMenu);
+chrome.runtime.onInstalled.addListener(initializeContextMenu);
+
+
+// 2. 监听来自 options.js 的消息，实时更新菜单
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'UPDATE_CONTEXT_MENU') {
+    if (request.enabled) {
+      createContextMenu();
+    } else {
+      removeContextMenu();
+    }
+    // 响应消息，表示已处理
+    sendResponse({status: "Context menu updated"});
+  }
+  // 返回 true 表示我们将异步发送响应（这是一个好习惯）
+  return true; 
 });
 
-// 2. 监听右键菜单点击事件
+
+// 3. 监听右键菜单点击事件 (这段逻辑保持不变)
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === CONTEXT_MENU_ID && info.selectionText) {
     // 获取选中的文本
@@ -25,7 +75,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
-// 3. 后台发送推送的函数
+// 4. 后台发送推送的函数 (这段逻辑保持不变)
 async function sendPushFromBackground(title, message) {
   // 从存储中获取配置
   chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens'], (result) => {
@@ -74,7 +124,7 @@ async function sendPushFromBackground(title, message) {
   });
 }
 
-// 4. 显示桌面通知的辅助函数
+// 5. 显示桌面通知的辅助函数 (这段逻辑保持不变)
 function showNotification(title, message) {
   chrome.notifications.create({
     type: 'basic',

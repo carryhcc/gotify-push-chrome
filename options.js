@@ -5,11 +5,15 @@ let i18nStrings = {};
 
 // 加载已保存的配置
 function loadOptions() {
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens'], function(result) {
+  // 增加 'contextMenuEnabled'
+  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuEnabled'], function(result) {
     // 设置默认值
     const defaultUrl = 'http://127.0.0.1:8080';
     document.getElementById('gotifyUrl').value = result.gotifyUrl || defaultUrl;
     
+    // 加载右键菜单开关状态，默认为 false (关闭)
+    document.getElementById('contextMenuEnabled').checked = result.contextMenuEnabled || false;
+
     const tokenList = document.getElementById('tokenList');
     tokenList.innerHTML = '';
     
@@ -25,8 +29,8 @@ function loadOptions() {
   });
 }
 
-// 添加一个token输入框到列表
-// tokenInfo 是一个对象 { remark: '...', token: '...' }
+// addTokenToList 函数保持不变
+// ... (addTokenToList 函数代码) ...
 function addTokenToList(tokenInfo = { remark: '', token: '' }) {
   const tokenList = document.getElementById('tokenList');
   const tokenItem = document.createElement('div');
@@ -46,12 +50,16 @@ function addTokenToList(tokenInfo = { remark: '', token: '' }) {
   tokenList.appendChild(tokenItem);
 }
 
-// 添加新的token输入框
+
+// addToken 函数保持不变
+// ... (addToken 函数代码) ...
 function addToken() {
   addTokenToList();
 }
 
-// 删除token输入框
+
+// deleteToken 函数保持不变
+// ... (deleteToken 函数代码) ...
 function deleteToken(button) {
   const tokenItem = button.parentElement;
   const tokenList = document.getElementById('tokenList');
@@ -66,11 +74,14 @@ function deleteToken(button) {
   }
 }
 
+
 // 保存配置
 function saveOptions() {
   const gotifyUrl = document.getElementById('gotifyUrl').value.trim();
   const tokenItems = document.querySelectorAll('#tokenList .token-item');
-  
+  // 获取开关状态
+  const contextMenuEnabled = document.getElementById('contextMenuEnabled').checked;
+
   const defaultRemarkPrefix = i18nStrings.defaultRemarkPrefix || 'Token';
   
   const gotifyTokens = Array.from(tokenItems)
@@ -96,13 +107,20 @@ function saveOptions() {
   // 保存到Chrome存储
   chrome.storage.sync.set({
     gotifyUrl: gotifyUrl,
-    gotifyTokens: gotifyTokens
+    gotifyTokens: gotifyTokens,
+    contextMenuEnabled: contextMenuEnabled // <-- 保存开关状态
   }, function() {
     // 显示保存成功消息
     const status = document.getElementById('status');
     status.className = 'status success';
     // 使用翻译
     status.textContent = i18nStrings.saveSuccessMsg || 'Settings saved';
+
+    // *** 新增：通知 background.js 更新右键菜单 ***
+    chrome.runtime.sendMessage({
+      type: 'UPDATE_CONTEXT_MENU',
+      enabled: contextMenuEnabled
+    });
     
     // 3秒后隐藏消息
     setTimeout(function() {

@@ -30,7 +30,7 @@ const translations = {
     'noConfigLink': 'configure',
     'noConfigMsg2': ' your Gotify server URL and Token first',
     'statusNoToken': 'No Token found. Please check settings',
-    'statusNoTitle': 'Please enter a title', // 这个我们不再使用，但保留
+    'statusNoTitle': 'Please enter a title',
     'statusNoMessage': 'Please enter content',
     'statusSending': 'Sending...',
     'statusSuccess': 'Message sent successfully!',
@@ -39,7 +39,8 @@ const translations = {
     'statusError403': 'Failed to send: 403 Forbidden. Invalid Token or insufficient permissions.',
     'statusError404': 'Failed to send: 404 Not Found. Check if the server URL is correct.',
     'statusErrorPrefix': 'Failed to send: ',
-    'defaultTitle': 'default' // <-- 新增
+    'defaultTitle': 'default',
+    'contextMenuLabel': 'Enable Right-Click Send' // <-- 新增
   },
   'zh_CN': {
     'langName': '简体中文',
@@ -71,7 +72,7 @@ const translations = {
     'noConfigLink': '配置',
     'noConfigMsg2': 'Gotify服务器地址和Token',
     'statusNoToken': '未找到Token，请检查配置',
-    'statusNoTitle': '请输入标题', // 这个我们不再使用，但保留
+    'statusNoTitle': '请输入标题',
     'statusNoMessage': '请输入内容',
     'statusSending': '正在发送...',
     'statusSuccess': '消息发送成功!',
@@ -80,10 +81,12 @@ const translations = {
     'statusError403': '发送失败：403 Forbidden，Token无效或权限不足。',
     'statusError404': '发送失败：404 Not Found，请检查服务器URL地址是否正确。',
     'statusErrorPrefix': '发送失败：',
-    'defaultTitle': '默认' // <-- 新增
+    'defaultTitle': '默认',
+    'contextMenuLabel': '开启右键发送' // <-- 新增
   }
 };
 
+// ... (applyTranslations 和 initI18n 函数保持不变) ...
 /**
  * Applies translations to the current document based on the selected language.
  * @param {string} lang - The language code (e.g., 'en', 'zh_CN').
