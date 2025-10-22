@@ -6,8 +6,9 @@ let i18nStrings = {};
 // 加载配置并更新界面
 function loadConfig() {
   // gotifyTokens 预期为 [{remark: '...', token: '...'}, ...]
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens'], function(result) {
+  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'lastSelectedToken'], function(result) {
     const gotifyTokens = result.gotifyTokens || [];
+    const lastSelectedToken = result.lastSelectedToken;
     
     // 根据是否有配置显示不同的界面
     if (gotifyTokens.length === 0) {
@@ -28,7 +29,10 @@ function loadConfig() {
         tokenSelect.appendChild(option);
       });
 
-      // 下拉框已经设置了默认选中值，无需额外设置占位符
+      // 如果有上次选择的token，则设置为选中状态
+      if (lastSelectedToken && gotifyTokens.some(token => token.token === lastSelectedToken)) {
+        tokenSelect.value = lastSelectedToken;
+      }
     }
   });
 }
@@ -112,6 +116,9 @@ function sendMessage() {
     })
     .then(data => {
       showStatus(i18nStrings.statusSuccess, 'success');
+      // 保存当前选择的token
+      const selectedToken = document.getElementById('tokenSelect').value;
+      chrome.storage.sync.set({ lastSelectedToken: selectedToken });
       // 清空消息内容，保留标题和优先级
       document.getElementById('messageInput').value = '';
     })
@@ -137,15 +144,16 @@ function sendMessage() {
 // 显示状态消息
 function showStatus(message, type) {
   const status = document.getElementById('status');
-  status.textContent = message;
+  // 使用innerHTML支持HTML内容（如可点击的链接）
+  status.innerHTML = message;
   status.className = `status ${type}`;
   
   // 如果不是错误消息，3秒后自动隐藏
   if (type !== 'error') {
     setTimeout(() => {
-      if (status.textContent === message) {
+      if (status.innerHTML === message) {
          status.className = 'status';
-         status.textContent = '';
+         status.innerHTML = '';
       }
     }, 3000);
   }
