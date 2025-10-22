@@ -1,9 +1,14 @@
-// options.js
+/**
+ * options.js - 选项页面的JavaScript逻辑
+ */
 
-// 全局变量，用于存储当前语言的翻译
+// 全局变量，用于存储当前语言的翻译字符串
 let i18nStrings = {};
 
-// 更新右键相关控件的显示状态
+/**
+ * 更新右键菜单相关控件的显示状态
+ * @param {boolean} enabled - 是否启用右键菜单
+ */
 function updateContextMenuControlsVisibility(enabled) {
   const priorityElement = document.querySelector('.priority-item');
   const tokenElement = document.getElementById('contextMenuTokenContainer');
@@ -17,7 +22,11 @@ function updateContextMenuControlsVisibility(enabled) {
   }
 }
 
-// 填充右键推送环境选择下拉框
+/**
+ * 填充右键推送环境选择下拉框
+ * @param {Array} tokens - Token配置列表
+ * @param {string} selectedToken - 当前选中的Token
+ */
 function populateContextMenuTokenSelect(tokens, selectedToken) {
   const tokenSelect = document.getElementById('contextMenuToken');
   if (!tokenSelect) return;
@@ -37,54 +46,16 @@ function populateContextMenuTokenSelect(tokens, selectedToken) {
   }
 }
 
-// 加载已保存的配置
-function loadOptions() {
-  // 增加 'contextMenuEnabled'、'contextMenuPriority' 和 'contextMenuToken'
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuEnabled', 'contextMenuPriority', 'contextMenuToken'], function(result) {
-    // 设置默认值
-    const defaultUrl = 'http://127.0.0.1:8080';
-    document.getElementById('gotifyUrl').value = result.gotifyUrl || defaultUrl;
-    
-    // 加载右键菜单开关状态，默认为 false (关闭)
-    const contextMenuEnabled = result.contextMenuEnabled || false;
-    document.getElementById('contextMenuEnabled').checked = contextMenuEnabled;
-
-    // 更新右键控件显示状态
-    updateContextMenuControlsVisibility(contextMenuEnabled);
-
-    // --- 加载右键优先级 ---
-    // 如果值未定义(undefined)或为null，则默认为5。允许值为0。
-    document.getElementById('contextMenuPriority').value = (result.contextMenuPriority !== undefined && result.contextMenuPriority !== null) ? result.contextMenuPriority : 5;
-    // --- 加载结束 ---
-
-    const tokenList = document.getElementById('tokenList');
-    tokenList.innerHTML = '';
-    
-    const gotifyTokens = result.gotifyTokens || [];
-    
-    // gotifyTokens 现在应该是 [{remark: '...', token: '...'}, ...]
-    if (gotifyTokens.length > 0) {
-      gotifyTokens.forEach(tokenInfo => {
-        addTokenToList(tokenInfo);
-      });
-      
-      // 填充右键推送环境选择下拉框
-      populateContextMenuTokenSelect(gotifyTokens, result.contextMenuToken);
-    } else {
-      // 如果没有保存的tokens，添加一个空的输入框
-      addTokenToList({ remark: '', token: '' });
-    }
-  });
-}
-
-// addTokenToList 函数保持不变
-// ... (addTokenToList 函数代码) ...
+/**
+ * 将Token信息添加到列表中
+ * @param {Object} tokenInfo - Token信息对象，包含remark和token字段
+ */
 function addTokenToList(tokenInfo = { remark: '', token: '' }) {
   const tokenList = document.getElementById('tokenList');
   const tokenItem = document.createElement('div');
   tokenItem.className = 'token-item';
   
-  // 使用 i18nStrings 获取占位符和按钮文本
+  // 使用国际化文本获取占位符和按钮文本
   const remarkPlaceholder = i18nStrings.tokenRemarkPlaceholder || 'Environment';
   const tokenPlaceholder = i18nStrings.tokenTokenPlaceholder || 'Enter Token...';
   const deleteText = i18nStrings.deleteBtnText || 'Delete';
@@ -98,16 +69,17 @@ function addTokenToList(tokenInfo = { remark: '', token: '' }) {
   tokenList.appendChild(tokenItem);
 }
 
-
-// addToken 函数保持不变
-// ... (addToken 函数代码) ...
+/**
+ * 添加新的Token输入行
+ */
 function addToken() {
   addTokenToList();
 }
 
-
-// deleteToken 函数保持不变
-// ... (deleteToken 函数代码) ...
+/**
+ * 删除Token输入行
+ * @param {HTMLElement} button - 删除按钮元素
+ */
 function deleteToken(button) {
   const tokenItem = button.parentElement;
   const tokenList = document.getElementById('tokenList');
@@ -122,19 +94,56 @@ function deleteToken(button) {
   }
 }
 
+/**
+ * 加载已保存的配置
+ */
+function loadOptions() {
+  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuEnabled', 'contextMenuPriority', 'contextMenuToken'], function(result) {
+    // 设置默认值
+    const defaultUrl = 'http://127.0.0.1:8080';
+    document.getElementById('gotifyUrl').value = result.gotifyUrl || defaultUrl;
+    
+    // 加载右键菜单开关状态，默认为false
+    const contextMenuEnabled = result.contextMenuEnabled || false;
+    document.getElementById('contextMenuEnabled').checked = contextMenuEnabled;
 
-// 保存配置
+    // 更新右键控件显示状态
+    updateContextMenuControlsVisibility(contextMenuEnabled);
+
+    // 加载右键优先级，默认值为5
+    document.getElementById('contextMenuPriority').value = (result.contextMenuPriority !== undefined && result.contextMenuPriority !== null) ? result.contextMenuPriority : 5;
+
+    // 加载Token列表
+    const tokenList = document.getElementById('tokenList');
+    tokenList.innerHTML = '';
+    
+    const gotifyTokens = result.gotifyTokens || [];
+    
+    if (gotifyTokens.length > 0) {
+      gotifyTokens.forEach(tokenInfo => {
+        addTokenToList(tokenInfo);
+      });
+      
+      // 填充右键推送环境选择下拉框
+      populateContextMenuTokenSelect(gotifyTokens, result.contextMenuToken);
+    } else {
+      // 如果没有保存的tokens，添加一个空的输入框
+      addTokenToList({ remark: '', token: '' });
+    }
+  });
+}
+
+/**
+ * 保存配置到Chrome存储
+ */
 function saveOptions() {
+  // 获取表单数据
   const gotifyUrl = document.getElementById('gotifyUrl').value.trim();
   const tokenItems = document.querySelectorAll('#tokenList .token-item');
-  // 获取开关状态
   const contextMenuEnabled = document.getElementById('contextMenuEnabled').checked;
-
-  // --- 获取优先级 ---
-  // 下拉框已经限制了值的范围，直接获取即可
   const contextMenuPriority = parseInt(document.getElementById('contextMenuPriority').value, 10);
-  // --- 获取结束 ---
-
+  
+  // 处理Token列表
   const defaultRemarkPrefix = i18nStrings.defaultRemarkPrefix || 'Token';
   
   const gotifyTokens = Array.from(tokenItems)
@@ -151,7 +160,7 @@ function saveOptions() {
     })
     .filter(item => item.token !== ''); // 过滤掉token为空的项
   
-  // 如果没有非空token，显示警告
+  // 验证至少有一个有效的Token
   if (gotifyTokens.length === 0) {
     alert(i18nStrings.alertMinOneToken || 'Please add at least one valid Token');
     return;
@@ -164,17 +173,16 @@ function saveOptions() {
   chrome.storage.sync.set({
     gotifyUrl: gotifyUrl,
     gotifyTokens: gotifyTokens,
-    contextMenuEnabled: contextMenuEnabled, // <-- 保存开关状态
-    contextMenuPriority: contextMenuPriority, // <-- 新增: 保存优先级
-    contextMenuToken: contextMenuToken // <-- 新增: 保存右键推送环境
+    contextMenuEnabled: contextMenuEnabled,
+    contextMenuPriority: contextMenuPriority,
+    contextMenuToken: contextMenuToken
   }, function() {
     // 显示保存成功消息
     const status = document.getElementById('status');
     status.className = 'status success';
-    // 使用翻译
     status.textContent = i18nStrings.saveSuccessMsg || 'Settings saved';
 
-    // *** 新增：通知 background.js 更新右键菜单 ***
+    // 通知background.js更新右键菜单
     chrome.runtime.sendMessage({
       type: 'UPDATE_CONTEXT_MENU',
       enabled: contextMenuEnabled,
@@ -182,12 +190,11 @@ function saveOptions() {
       token: contextMenuToken
     });
     
-    // *** 新增：保存后即时刷新右键推送环境选择下拉框 ***
-    // 保留用户当前选择的token（如果该token仍然存在于新的列表中）
+    // 保存后刷新右键推送环境选择下拉框
     const tokenSelect = document.getElementById('contextMenuToken');
     let selectedToken = tokenSelect?.value;
     
-    // 检查当前选择的token是否仍然有效（是否存在于新的token列表中）
+    // 检查当前选择的token是否仍然有效
     const tokenStillExists = gotifyTokens.some(token => token.token === selectedToken);
     if (!tokenStillExists && gotifyTokens.length > 0) {
       // 如果之前选择的token不存在了，使用第一个token
@@ -204,46 +211,48 @@ function saveOptions() {
   });
 }
 
-// 页面加载时加载配置并绑定事件监听器
-document.addEventListener('DOMContentLoaded', async function() {
-  // 1. 初始化 i18n 并获取当前语言和翻译
+/**
+ * 页面初始化函数
+ */
+async function initPage() {
+  // 初始化国际化并获取当前语言和翻译
   const { lang, strings } = await initI18n();
-  i18nStrings = strings; // 将翻译存储在全局变量中
+  i18nStrings = strings;
   
-  // 2. 设置语言切换器的当前值
+  // 设置语言切换器的当前值并绑定事件
   const langSwitcher = document.getElementById('langSwitcher');
   if (langSwitcher) {
     langSwitcher.value = lang;
     
-    // 3. 绑定语言切换器事件
     langSwitcher.addEventListener('change', (e) => {
       const newLang = e.target.value;
       chrome.storage.sync.set({ userLang: newLang }, () => {
         // 语言保存后，重新应用翻译
         i18nStrings = applyTranslations(newLang);
-        // 重新加载选项，以更新动态添加的元素（如token行）的占位符
+        // 重新加载选项，以更新动态添加的元素的占位符
         loadOptions();
       });
     });
   }
 
-  // 4. 加载其他配置
+  // 加载配置
   loadOptions();
   
-  // 5. 绑定添加Token按钮事件
+  // 绑定事件
   document.querySelector('.add-btn').addEventListener('click', addToken);
-  
-  // 6. 绑定保存配置按钮事件
   document.querySelector('.save-btn').addEventListener('click', saveOptions);
   
-  // 7. 绑定右键菜单开关事件
+  // 绑定右键菜单开关事件
   const contextMenuToggle = document.getElementById('contextMenuEnabled');
   if (contextMenuToggle) {
     contextMenuToggle.addEventListener('change', function() {
       updateContextMenuControlsVisibility(this.checked);
     });
   }
-});
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', initPage);
 
 // 通过事件委托处理动态添加的删除按钮
 document.getElementById('tokenList').addEventListener('click', function(event) {

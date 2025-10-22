@@ -1,4 +1,6 @@
-// i18n.js
+/**
+ * i18n.js - 国际化支持模块
+ */
 const translations = {
   'en': {
     'langName': 'English',
@@ -41,7 +43,6 @@ const translations = {
     'statusErrorPrefix': 'Failed to send: ',
     'defaultTitle': 'default',
     'contextMenuLabel': 'Enable Right-Click Send',
-    // --- 新增内容 (New) ---
     'contextMenuTokenLabel': 'Right-Click Environment:',
     'contextMenuPriorityLabel': 'Right-Click Priority:',
     'priorityPlaceholder': 'Priority (0-10, default 5)',
@@ -52,7 +53,6 @@ const translations = {
     'priorityOption0': '0 (Lowest)',
     'priorityOption5': '5 (Default)',
     'priorityOption10': '10 (Highest)'
-    // --- 新增结束 ---
   },
   'zh_CN': {
     'langName': '简体中文',
@@ -95,7 +95,6 @@ const translations = {
     'statusErrorPrefix': '发送失败：',
     'defaultTitle': '默认',
     'contextMenuLabel': '开启右键发送',
-    // --- 新增内容 (New) ---
     'contextMenuTokenLabel': '右键推送环境选择:',
     'contextMenuPriorityLabel': '右键推送优先级:',
     'priorityPlaceholder': '优先级 (0-10, 默认 5)',
@@ -106,23 +105,21 @@ const translations = {
     'priorityOption0': '0 (最低)',
     'priorityOption5': '5 (默认)',
     'priorityOption10': '10 (最高)'
-    // --- 新增结束 ---
   }
 };
 
-// ... (applyTranslations 和 initI18n 函数保持不变) ...
 /**
- * Applies translations to the current document based on the selected language.
- * @param {string} lang - The language code (e.g., 'en', 'zh_CN').
- * @returns {object} The translation object for the applied language.
+ * 将翻译应用到当前文档
+ * @param {string} lang - 语言代码 (例如: 'en', 'zh_CN')
+ * @returns {object} 应用的语言翻译对象
  */
 function applyTranslations(lang) {
   const langStrings = translations[lang] || translations['en'];
   
-  // Set document language
+  // 设置文档语言
   document.documentElement.lang = lang === 'zh_CN' ? 'zh-CN' : 'en';
 
-  // Translate text content
+  // 翻译文本内容
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (langStrings[key]) {
@@ -130,7 +127,7 @@ function applyTranslations(lang) {
     }
   });
   
-  // Translate placeholders
+  // 翻译占位符
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     if (langStrings[key]) {
@@ -142,22 +139,17 @@ function applyTranslations(lang) {
 }
 
 /**
- * Initializes internationalization by loading the user's preferred language
- * (or detecting it) and applying the translations.
- * @returns {Promise<{lang: string, strings: object}>} A promise that resolves with the language code and the translation strings.
+ * 初始化国际化，加载用户首选语言或自动检测
+ * @returns {Promise<{lang: string, strings: object}>} 包含语言代码和翻译字符串的Promise
  */
 async function initI18n() {
   return new Promise((resolve) => {
     chrome.storage.sync.get('userLang', (result) => {
       let lang = result.userLang;
       if (!lang) {
-        // Guess from browser language
+        // 从浏览器语言猜测
         const browserLang = navigator.language;
-        if (browserLang.startsWith('zh')) {
-          lang = 'zh_CN';
-        } else {
-          lang = 'en';
-        }
+        lang = browserLang.startsWith('zh') ? 'zh_CN' : 'en';
       }
       const strings = applyTranslations(lang);
       resolve({ lang: lang, strings: strings });

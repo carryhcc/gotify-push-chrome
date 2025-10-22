@@ -1,11 +1,15 @@
-// popup.js
+/**
+ * popup.js - Gotify通知扩展的弹窗页面脚本
+ */
 
 // 全局变量，用于存储当前语言的翻译
 let i18nStrings = {};
 
-// 加载配置并更新界面
+/**
+ * 加载配置并更新界面
+ * 从存储中获取Gotify服务器配置和令牌信息，并据此更新UI显示
+ */
 function loadConfig() {
-  // gotifyTokens 预期为 [{remark: '...', token: '...'}, ...]
   chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'lastSelectedToken'], function(result) {
     const gotifyTokens = result.gotifyTokens || [];
     const lastSelectedToken = result.lastSelectedToken;
@@ -37,7 +41,10 @@ function loadConfig() {
   });
 }
 
-// 发送消息到Gotify服务器
+/**
+ * 发送消息到Gotify服务器
+ * 获取表单数据，验证输入，然后向Gotify服务器发送POST请求
+ */
 function sendMessage() {
   // 清空之前的状态消息
   const status = document.getElementById('status');
@@ -47,13 +54,9 @@ function sendMessage() {
   // 获取输入值
   const tokenSelect = document.getElementById('tokenSelect');
   const selectedToken = tokenSelect.value;
-  let title = document.getElementById('titleInput').value.trim(); // <-- 改为 let
+  let title = document.getElementById('titleInput').value.trim();
   const message = document.getElementById('messageInput').value.trim();
-
-  // --- 获取优先级 ---
-  // 下拉框已经限制了值的范围，直接获取即可
   const priority = parseInt(document.getElementById('priorityInput').value, 10);
-  // --- 获取结束 ---
   
   // 验证输入
   if (!selectedToken) {
@@ -61,31 +64,29 @@ function sendMessage() {
     return;
   }
   
-  // 移除了对 title 的检查
-  
   if (!message) {
     showStatus(i18nStrings.statusNoMessage, 'error');
     return;
   }
   
-  // *** 新增：如果标题为空，设置默认值 ***
+  // 如果标题为空，设置默认值
   if (!title) {
-    title = i18nStrings.defaultTitle || 'default'; // 使用 i18n 的默认值
+    title = i18nStrings.defaultTitle || 'default';
   }
   
   // 显示正在发送
   showStatus(i18nStrings.statusSending, 'success');
   
-  // 获取服务器地址
+  // 获取服务器地址并发送请求
   chrome.storage.sync.get('gotifyUrl', function(result) {
-    const gotifyUrl = (result.gotifyUrl || 'http://127.0.0.1:8080').replace(/\/$/, ''); // 移除尾部斜杠
+    const gotifyUrl = (result.gotifyUrl || 'http://127.0.0.1:8080').replace(/\/$/, '');
     const apiUrl = `${gotifyUrl}/message`;
     
     // 准备请求数据
     const data = {
-      title: title, // title 现在可能是默认值
+      title: title,
       message: message,
-      priority: priority // <-- 新增: 包含优先级
+      priority: priority
     };
     
     // 发送请求
@@ -103,7 +104,6 @@ function sendMessage() {
         return response.text().then(text => {
           let errorDetail = text;
           try {
-            // 尝试解析JSON格式的错误
             const errorJson = JSON.parse(text);
             errorDetail = errorJson.error_description || errorJson.error || text;
           } catch (e) {
@@ -123,8 +123,9 @@ function sendMessage() {
       document.getElementById('messageInput').value = '';
     })
     .catch(error => {
-      console.error('Gotify请求失败:', error); // 保留关键错误日志
+      console.error('Gotify请求失败:', error);
       let errorMsg = i18nStrings.statusErrorGeneric;
+      
       if (error.message) {
         if (error.message.includes('Failed to fetch')) {
           errorMsg = i18nStrings.statusErrorFetch;
@@ -136,15 +137,19 @@ function sendMessage() {
           errorMsg = `${i18nStrings.statusErrorPrefix} ${error.message}`;
         }
       }
+      
       showStatus(errorMsg, 'error');
     });
   });
 }
 
-// 显示状态消息
+/**
+ * 显示状态消息
+ * @param {string} message - 要显示的消息内容
+ * @param {string} type - 消息类型（'success' 或 'error'）
+ */
 function showStatus(message, type) {
   const status = document.getElementById('status');
-  // 使用innerHTML支持HTML内容（如可点击的链接）
   status.innerHTML = message;
   status.className = `status ${type}`;
   
@@ -159,7 +164,10 @@ function showStatus(message, type) {
   }
 }
 
-// 打开选项页面
+/**
+ * 打开选项页面
+ * 使用Chrome API打开扩展的选项页面
+ */
 function openOptions() {
   if (chrome.runtime.openOptionsPage) {
     chrome.runtime.openOptionsPage();
@@ -168,24 +176,26 @@ function openOptions() {
   }
 }
 
-// 页面加载时加载配置并绑定事件监听器
-document.addEventListener('DOMContentLoaded', async function() {
-  // 1. 初始化 i18n 并获取翻译
+/**
+ * 页面初始化函数
+ * 初始化国际化、加载配置并绑定事件监听器
+ */
+async function initPage() {
+  // 初始化 i18n 并获取翻译
   const { strings } = await initI18n();
-  i18nStrings = strings; // 存储翻译
+  i18nStrings = strings;
   
-  // 2. 加载配置 (必须在 i18n 之后，以便 loadConfig 能使用 i18nStrings)
+  // 加载配置
   loadConfig();
   
-  // 3. 绑定发送按钮事件
+  // 绑定事件
   document.querySelector('.send-btn').addEventListener('click', sendMessage);
-  
-  // 4. 绑定设置按钮事件
   document.querySelector('.options-btn').addEventListener('click', openOptions);
-  
-  // 5. 绑定配置链接事件
   document.getElementById('configLink').addEventListener('click', function(e) {
     e.preventDefault();
     openOptions();
   });
-});
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', initPage);

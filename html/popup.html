@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"> <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="popupTitle">Gotify Push Tool</title>
+  <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+  
+  <div class="header">
+    <h2 data-i18n="popupTitle">发送Gotify推送</h2>
+    <button class="btn options-btn" data-i18n="optionsBtn">设置</button>
+  </div>
+  
+  <div id="configForm">
+    <div class="form-group">
+      <label for="tokenSelect" data-i18n="envLabel">推送环境:</label>
+      <select id="tokenSelect"></select>
+    </div>
+    
+    <div class="row">
+      <div class="form-group">
+        <label for="titleInput" data-i18n="titleLabel">标题:</label>
+        <input type="text" id="titleInput" data-i18n-placeholder="titlePlaceholder" placeholder="输入推送标题...">
+      </div>
+      
+      <div class="form-group priority">
+        <label for="priorityInput" data-i18n="popupPriorityLabel">优先级:</label>
+        <select id="priorityInput">
+          <option value="0" data-i18n="priorityOption0">0 (最低)</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5" selected data-i18n="priorityOption5">5 (默认)</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10" data-i18n="priorityOption10">10 (最高)</option>
+        </select>
+      </div>
+      </div>
+    
+    <div class="form-group">
+      <label for="messageInput" data-i18n="messageLabel">内容:</label>
+      <textarea id="messageInput" data-i18n-placeholder="messagePlaceholder" placeholder="输入推送内容..."></textarea>
+    </div>
+    
+    <div class="actions">
+      <button class="btn send-btn" data-i18n="sendBtn">发送</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+  </div>
+  
+  <div id="noConfig" style="display: none;">
+    <div class="no-config">
+      <span data-i18n="noConfigMsg">请先</span>
+      <a href="#" id="configLink" data-i18n="noConfigLink">配置</a>
+      <span data-i18n="noConfigMsg2">Gotify服务器地址和Token</span>
+    </div>
+  </div>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/popup.js"></script>
+</body>
+</html>
