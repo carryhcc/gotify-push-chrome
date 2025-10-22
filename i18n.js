@@ -36,11 +36,22 @@ const translations = {
     'statusSuccess': 'Message sent successfully!',
     'statusErrorGeneric': 'Failed to send. Check network, URL, or Token.',
     'statusErrorFetch': 'Failed to send: Cannot connect to server. Check URL or CORS policy.',
-    'statusError403': 'Failed to send: 403 Forbidden. Invalid Token or insufficient permissions.',
+    'statusError403': 'Failed to send: 403 Forbidden. Invalid Token, insufficient permissions or CORS settings. Please visit https://gotify.net/docs/config to check GOTIFY_SERVER_CORS_ALLOWORIGINS, GOTIFY_SERVER_CORS_ALLOWMETHODS and GOTIFY_SERVER_CORS_ALLOWHEADERS settings and restart the server.',
     'statusError404': 'Failed to send: 404 Not Found. Check if the server URL is correct.',
     'statusErrorPrefix': 'Failed to send: ',
     'defaultTitle': 'default',
-    'contextMenuLabel': 'Enable Right-Click Send' // <-- 新增
+    'contextMenuLabel': 'Enable Right-Click Send',
+    // --- 新增内容 (New) ---
+    'contextMenuPriorityLabel': 'Right-Click Priority:',
+    'priorityPlaceholder': 'Priority (0-10, default 5)',
+    'popupPriorityLabel': 'Priority:',
+    'priorityLowest': 'Lowest',
+    'priorityDefault': 'Default',
+    'priorityHighest': 'Highest',
+    'priorityOption0': '0 (Lowest)',
+    'priorityOption5': '5 (Default)',
+    'priorityOption10': '10 (Highest)'
+    // --- 新增结束 ---
   },
   'zh_CN': {
     'langName': '简体中文',
@@ -78,11 +89,22 @@ const translations = {
     'statusSuccess': '消息发送成功!',
     'statusErrorGeneric': '发送失败，请检查网络、URL或Token。',
     'statusErrorFetch': '发送失败：无法连接到服务器。请检查URL配置或CORS策略。',
-    'statusError403': '发送失败：403 Forbidden，Token无效或权限不足。',
+    'statusError403': '发送失败：403 Forbidden，Token无效、权限不足或CORS配置问题。请访问 https://gotify.net/docs/config 查看 GOTIFY_SERVER_CORS_ALLOWORIGINS、GOTIFY_SERVER_CORS_ALLOWMETHODS 和 GOTIFY_SERVER_CORS_ALLOWHEADERS 配置项并重启服务端。',
     'statusError404': '发送失败：404 Not Found，请检查服务器URL地址是否正确。',
     'statusErrorPrefix': '发送失败：',
     'defaultTitle': '默认',
-    'contextMenuLabel': '开启右键发送' // <-- 新增
+    'contextMenuLabel': '开启右键发送',
+    // --- 新增内容 (New) ---
+    'contextMenuPriorityLabel': '右键推送优先级:',
+    'priorityPlaceholder': '优先级 (0-10, 默认 5)',
+    'popupPriorityLabel': '优先级:',
+    'priorityLowest': '最低',
+    'priorityDefault': '默认',
+    'priorityHighest': '最高',
+    'priorityOption0': '0 (最低)',
+    'priorityOption5': '5 (默认)',
+    'priorityOption10': '10 (最高)'
+    // --- 新增结束 ---
   }
 };
 

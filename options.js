@@ -5,14 +5,19 @@ let i18nStrings = {};
 
 // 加载已保存的配置
 function loadOptions() {
-  // 增加 'contextMenuEnabled'
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuEnabled'], function(result) {
+  // 增加 'contextMenuEnabled' 和 'contextMenuPriority'
+  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuEnabled', 'contextMenuPriority'], function(result) {
     // 设置默认值
     const defaultUrl = 'http://127.0.0.1:8080';
     document.getElementById('gotifyUrl').value = result.gotifyUrl || defaultUrl;
     
     // 加载右键菜单开关状态，默认为 false (关闭)
     document.getElementById('contextMenuEnabled').checked = result.contextMenuEnabled || false;
+
+    // --- 加载右键优先级 ---
+    // 如果值未定义(undefined)或为null，则默认为5。允许值为0。
+    document.getElementById('contextMenuPriority').value = (result.contextMenuPriority !== undefined && result.contextMenuPriority !== null) ? result.contextMenuPriority : 5;
+    // --- 加载结束 ---
 
     const tokenList = document.getElementById('tokenList');
     tokenList.innerHTML = '';
@@ -44,7 +49,7 @@ function addTokenToList(tokenInfo = { remark: '', token: '' }) {
   tokenItem.innerHTML = `
     <input type="text" class="remark-input" placeholder="${remarkPlaceholder}" value="${tokenInfo.remark || ''}">
     <input type="text" class="token-input" placeholder="${tokenPlaceholder}" value="${tokenInfo.token || ''}">
-    <button class="delete-btn">${deleteText}</button>
+    <button class="btn delete-btn">${deleteText}</button>
   `;
   
   tokenList.appendChild(tokenItem);
@@ -82,6 +87,11 @@ function saveOptions() {
   // 获取开关状态
   const contextMenuEnabled = document.getElementById('contextMenuEnabled').checked;
 
+  // --- 获取优先级 ---
+  // 下拉框已经限制了值的范围，直接获取即可
+  const contextMenuPriority = parseInt(document.getElementById('contextMenuPriority').value, 10);
+  // --- 获取结束 ---
+
   const defaultRemarkPrefix = i18nStrings.defaultRemarkPrefix || 'Token';
   
   const gotifyTokens = Array.from(tokenItems)
@@ -108,7 +118,8 @@ function saveOptions() {
   chrome.storage.sync.set({
     gotifyUrl: gotifyUrl,
     gotifyTokens: gotifyTokens,
-    contextMenuEnabled: contextMenuEnabled // <-- 保存开关状态
+    contextMenuEnabled: contextMenuEnabled, // <-- 保存开关状态
+    contextMenuPriority: contextMenuPriority // <-- 新增: 保存优先级
   }, function() {
     // 显示保存成功消息
     const status = document.getElementById('status');

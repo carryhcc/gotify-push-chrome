@@ -4,20 +4,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="popupTitle">Gotify Push Tool</title>
   <style>
+    :root {
+      --color-primary: #007aff;
+      --color-primary-dark: #005bb5;
+      --color-success: #34c759;
+      --color-success-dark: #2da84a;
+      --color-danger: #ff3b30;
+      --color-bg-light: #f5f5f7;
+      --color-bg-card: #ffffff;
+      --color-text: #333;
+      --color-text-secondary: #666;
+      --color-border: #e0e0e0;
+      --color-border-light: #f0f0f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.12);
+      --border-radius-md: 8px;
+      --border-radius-sm: 5px;
+    }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      width: 380px; /* 稍微加宽 */
-      background-color: #f9f9f9;
+      padding: 0;
+      width: 380px;
+      background-color: var(--color-bg-light);
+      color: var(--color-text);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background-color: var(--color-bg-card);
+      border-bottom: 1px solid var(--color-border-light);
     }
     h2 {
-      color: #333;
+      color: var(--color-text);
       font-size: 18px;
-      margin-top: 0;
-      margin-bottom: 20px;
-      text-align: center;
+      font-weight: 600;
+      margin: 0;
     }
+    
+    #configForm {
+      padding: 20px;
+    }
+
     .form-group {
       margin-bottom: 16px;
     }
@@ -25,90 +55,115 @@
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
-      color: #555;
+      color: var(--color-text-secondary);
       font-size: 14px;
     }
     select,
     input[type="text"],
+    input[type="number"],
     textarea {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
+      padding: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-sm);
+      font-size: 15px;
       box-sizing: border-box;
-      background-color: #fff;
+      background-color: var(--color-bg-card);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    select:focus,
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
     }
     select {
-      /* 确保select有合适的默认高度 */
-      height: 40px;
+      height: 46px; /* 统一下拉框高度 */
     }
     textarea {
       min-height: 120px;
       resize: vertical;
       font-family: inherit;
     }
+    
+    /* 标题和优先级的内联布局 */
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+    .row .form-group {
+      flex: 1; /* 均分空间 */
+    }
+    /* 优先级输入框宽度较小 */
+    .row .form-group.priority {
+      flex: 0 0 100px; /* 固定宽度 */
+    }
+
     .actions {
       display: flex;
       gap: 12px;
       margin-top: 20px;
     }
-    .send-btn {
-      flex: 1;
-      background-color: #4CAF50;
-      color: white;
+    .btn { /* 统一按钮样式 */
       border: none;
       padding: 12px;
-      border-radius: 5px;
+      border-radius: var(--border-radius-sm);
       cursor: pointer;
       font-size: 15px;
       font-weight: 500;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+    .send-btn {
+      flex: 1;
+      background-color: var(--color-success);
+      color: white;
+      box-shadow: var(--shadow-sm);
     }
     .send-btn:hover {
-      background-color: #45a049;
+      background-color: var(--color-success-dark);
     }
     .options-btn {
-      background-color: #f0f0f0;
-      color: #666;
-      border: 1px solid #ddd;
-      padding: 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 15px;
-      transition: background-color 0.2s;
+      background-color: var(--color-bg-card);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
     }
     .options-btn:hover {
-      background-color: #e0e0e0;
+      background-color: #f8f8f8;
+      border-color: #d0d0d0;
     }
     .status {
       margin-top: 15px;
       padding: 12px;
-      border-radius: 5px;
+      border-radius: var(--border-radius-sm);
       font-size: 14px;
       display: none;
       text-align: center;
+      font-weight: 500;
     }
     .success {
-      background-color: #e8f5e8;
-      color: #2e7d2e;
+      background-color: #e6f7eb;
+      color: #228b22;
       display: block;
     }
     .error {
       background-color: #ffebee;
-      color: #c62828;
+      color: var(--color-danger);
       display: block;
     }
     .no-config {
-      padding: 20px;
-      background-color: #fff3cd;
-      color: #856404;
-      border-radius: 5px;
+      padding: 24px 20px;
+      background-color: #fff8e1;
+      color: #665200;
+      border-radius: var(--border-radius-md);
       font-size: 14px;
       text-align: center;
+      margin: 20px;
+      box-shadow: var(--shadow-sm);
     }
     .no-config a {
-      color: #0066cc;
+      color: var(--color-primary);
       text-decoration: none;
       font-weight: 500;
     }
@@ -118,7 +173,11 @@
   </style>
 </head>
 <body>
-  <h2 data-i18n="popupTitle">发送Gotify推送</h2>
+  
+  <div class="header">
+    <h2 data-i18n="popupTitle">发送Gotify推送</h2>
+    <button class="btn options-btn" data-i18n="optionsBtn">设置</button>
+  </div>
   
   <div id="configForm">
     <div class="form-group">
@@ -126,10 +185,29 @@
       <select id="tokenSelect"></select>
     </div>
     
-    <div class="form-group">
-      <label for="titleInput" data-i18n="titleLabel">标题:</label>
-      <input type="text" id="titleInput" data-i18n-placeholder="titlePlaceholder" placeholder="输入推送标题...">
-    </div>
+    <div class="row">
+      <div class="form-group">
+        <label for="titleInput" data-i18n="titleLabel">标题:</label>
+        <input type="text" id="titleInput" data-i18n-placeholder="titlePlaceholder" placeholder="输入推送标题...">
+      </div>
+      
+      <div class="form-group priority">
+        <label for="priorityInput" data-i18n="popupPriorityLabel">优先级:</label>
+        <select id="priorityInput">
+          <option value="0" data-i18n="priorityOption0">0 (最低)</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5" selected data-i18n="priorityOption5">5 (默认)</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10" data-i18n="priorityOption10">10 (最高)</option>
+        </select>
+      </div>
+      </div>
     
     <div class="form-group">
       <label for="messageInput" data-i18n="messageLabel">内容:</label>
@@ -137,17 +215,18 @@
     </div>
     
     <div class="actions">
-      <button class="send-btn" data-i18n="sendBtn">发送</button>
-      <button class="options-btn" data-i18n="optionsBtn">设置</button>
+      <button class="btn send-btn" data-i18n="sendBtn">发送</button>
     </div>
     
     <div id="status" class="status"></div>
   </div>
   
-  <div id="noConfig" class="no-config" style="display: none;">
-    <span data-i18n="noConfigMsg">请先</span>
-    <a href="#" id="configLink" data-i18n="noConfigLink">配置</a>
-    <span data-i18n="noConfigMsg2">Gotify服务器地址和Token</span>
+  <div id="noConfig" style="display: none;">
+    <div class="no-config">
+      <span data-i18n="noConfigMsg">请先</span>
+      <a href="#" id="configLink" data-i18n="noConfigLink">配置</a>
+      <span data-i18n="noConfigMsg2">Gotify服务器地址和Token</span>
+    </div>
   </div>
 
   <script src="i18n.js"></script>

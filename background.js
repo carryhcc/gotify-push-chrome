@@ -75,11 +75,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
-// 4. 后台发送推送的函数 (这段逻辑保持不变)
+// 4. 后台发送推送的函数 (*** 此处已更新 ***)
 async function sendPushFromBackground(title, message) {
-  // 从存储中获取配置
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens'], (result) => {
-    const { gotifyUrl, gotifyTokens } = result;
+  // 从存储中获取配置 (*** 新增 'contextMenuPriority' ***)
+  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuPriority'], (result) => {
+    const { gotifyUrl, gotifyTokens, contextMenuPriority } = result;
 
     // 检查配置
     if (!gotifyUrl || !gotifyTokens || gotifyTokens.length === 0) {
@@ -88,6 +88,13 @@ async function sendPushFromBackground(title, message) {
       return;
     }
 
+    // --- 新增: 验证并设置优先级 ---
+    let pushPriority = contextMenuPriority;
+    if (typeof pushPriority !== 'number' || pushPriority < 0 || pushPriority > 10) {
+      pushPriority = 5; // 验证失败或未设置，默认为 5
+    }
+    // --- 新增结束 ---
+
     // 默认使用第一个Token
     const firstToken = gotifyTokens[0].token;
     const apiUrl = (gotifyUrl || '').replace(/\/$/, '') + '/message';
@@ -95,7 +102,8 @@ async function sendPushFromBackground(title, message) {
     // 准备数据
     const data = {
       title: title,
-      message: message
+      message: message,
+      priority: pushPriority // <-- 新增: 包含优先级
     };
 
     // 发送 Fetch 请求

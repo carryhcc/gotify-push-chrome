@@ -10,5 +10,13 @@
   "contextMenuTitle": {
     "message": "Gotify send",
     "description": "The text for the context menu item."
+  },
+  "contextMenuConfigTitle": {
+    "message": "Context Menu Configuration",
+    "description": "Title for context menu configuration section"
+  },
+  "serverConfigTitle": {
+    "message": "Server Configuration",
+    "description": "Title for server configuration section"
   }
 }

@@ -27,6 +27,8 @@ function loadConfig() {
         option.textContent = tokenInfo.remark; // 显示的是备注
         tokenSelect.appendChild(option);
       });
+
+      // 下拉框已经设置了默认选中值，无需额外设置占位符
     }
   });
 }
@@ -43,6 +45,11 @@ function sendMessage() {
   const selectedToken = tokenSelect.value;
   let title = document.getElementById('titleInput').value.trim(); // <-- 改为 let
   const message = document.getElementById('messageInput').value.trim();
+
+  // --- 获取优先级 ---
+  // 下拉框已经限制了值的范围，直接获取即可
+  const priority = parseInt(document.getElementById('priorityInput').value, 10);
+  // --- 获取结束 ---
   
   // 验证输入
   if (!selectedToken) {
@@ -73,7 +80,8 @@ function sendMessage() {
     // 准备请求数据
     const data = {
       title: title, // title 现在可能是默认值
-      message: message
+      message: message,
+      priority: priority // <-- 新增: 包含优先级
     };
     
     // 发送请求
@@ -104,7 +112,7 @@ function sendMessage() {
     })
     .then(data => {
       showStatus(i18nStrings.statusSuccess, 'success');
-      // 清空消息内容，保留标题
+      // 清空消息内容，保留标题和优先级
       document.getElementById('messageInput').value = '';
     })
     .catch(error => {
@@ -158,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   const { strings } = await initI18n();
   i18nStrings = strings; // 存储翻译
   
-  // 2. 加载配置
+  // 2. 加载配置 (必须在 i18n 之后，以便 loadConfig 能使用 i18nStrings)
   loadConfig();
   
   // 3. 绑定发送按钮事件
