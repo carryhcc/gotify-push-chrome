@@ -6,5 +6,9 @@
   "extDesc": {
     "message": "用于向Gotify服务器发送推送消息的Chrome插件",
     "description": "The description of the extension."
+  },
+  "contextMenuTitle": {
+    "message": "发送到Gotify",
+    "description": "The text for the context menu item."
   }
 }

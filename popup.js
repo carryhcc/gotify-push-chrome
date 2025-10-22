@@ -41,7 +41,7 @@ function sendMessage() {
   // 获取输入值
   const tokenSelect = document.getElementById('tokenSelect');
   const selectedToken = tokenSelect.value;
-  const title = document.getElementById('titleInput').value.trim();
+  let title = document.getElementById('titleInput').value.trim(); // <-- 改为 let
   const message = document.getElementById('messageInput').value.trim();
   
   // 验证输入
@@ -50,14 +50,16 @@ function sendMessage() {
     return;
   }
   
-  if (!title) {
-    showStatus(i18nStrings.statusNoTitle, 'error');
-    return;
-  }
+  // 移除了对 title 的检查
   
   if (!message) {
     showStatus(i18nStrings.statusNoMessage, 'error');
     return;
+  }
+  
+  // *** 新增：如果标题为空，设置默认值 ***
+  if (!title) {
+    title = i18nStrings.defaultTitle || 'default'; // 使用 i18n 的默认值
   }
   
   // 显示正在发送
@@ -70,7 +72,7 @@ function sendMessage() {
     
     // 准备请求数据
     const data = {
-      title: title,
+      title: title, // title 现在可能是默认值
       message: message
     };
     

@@ -6,5 +6,9 @@
   "extDesc": {
     "message": "A Chrome extension for sending push messages to a Gotify server",
     "description": "The description of the extension."
+  },
+  "contextMenuTitle": {
+    "message": "Gotify send",
+    "description": "The text for the context menu item."
   }
 }

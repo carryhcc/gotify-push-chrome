@@ -21,7 +21,7 @@ const translations = {
     'popupTitle': 'Send Gotify Push',
     'envLabel': 'Environment:',
     'titleLabel': 'Title:',
-    'titlePlaceholder': 'Enter push title...',
+    'titlePlaceholder': 'Enter push title... (Optional)',
     'messageLabel': 'Content:',
     'messagePlaceholder': 'Enter push content...',
     'sendBtn': 'Send',
@@ -30,7 +30,7 @@ const translations = {
     'noConfigLink': 'configure',
     'noConfigMsg2': ' your Gotify server URL and Token first',
     'statusNoToken': 'No Token found. Please check settings',
-    'statusNoTitle': 'Please enter a title',
+    'statusNoTitle': 'Please enter a title', // 这个我们不再使用，但保留
     'statusNoMessage': 'Please enter content',
     'statusSending': 'Sending...',
     'statusSuccess': 'Message sent successfully!',
@@ -38,7 +38,8 @@ const translations = {
     'statusErrorFetch': 'Failed to send: Cannot connect to server. Check URL or CORS policy.',
     'statusError403': 'Failed to send: 403 Forbidden. Invalid Token or insufficient permissions.',
     'statusError404': 'Failed to send: 404 Not Found. Check if the server URL is correct.',
-    'statusErrorPrefix': 'Failed to send: '
+    'statusErrorPrefix': 'Failed to send: ',
+    'defaultTitle': 'default' // <-- 新增
   },
   'zh_CN': {
     'langName': '简体中文',
@@ -61,7 +62,7 @@ const translations = {
     'popupTitle': '发送Gotify推送',
     'envLabel': '推送环境:',
     'titleLabel': '标题:',
-    'titlePlaceholder': '输入推送标题...',
+    'titlePlaceholder': '输入推送标题... (可选)',
     'messageLabel': '内容:',
     'messagePlaceholder': '输入推送内容...',
     'sendBtn': '发送',
@@ -70,7 +71,7 @@ const translations = {
     'noConfigLink': '配置',
     'noConfigMsg2': 'Gotify服务器地址和Token',
     'statusNoToken': '未找到Token，请检查配置',
-    'statusNoTitle': '请输入标题',
+    'statusNoTitle': '请输入标题', // 这个我们不再使用，但保留
     'statusNoMessage': '请输入内容',
     'statusSending': '正在发送...',
     'statusSuccess': '消息发送成功!',
@@ -78,7 +79,8 @@ const translations = {
     'statusErrorFetch': '发送失败：无法连接到服务器。请检查URL配置或CORS策略。',
     'statusError403': '发送失败：403 Forbidden，Token无效或权限不足。',
     'statusError404': '发送失败：404 Not Found，请检查服务器URL地址是否正确。',
-    'statusErrorPrefix': '发送失败：'
+    'statusErrorPrefix': '发送失败：',
+    'defaultTitle': '默认' // <-- 新增
   }
 };
 
