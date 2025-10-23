@@ -31,8 +31,11 @@ export function isValidToken(token) {
     return false;
   }
 
-  // Gotify tokens are typically base64-like strings, at least 20 characters
-  return token.length >= 20 && /^[A-Za-z0-9+/=_-]+$/.test(token);
+  const trimmedToken = token.trim();
+
+  // Gotify tokens should be non-empty and at least 5 characters
+  // Allow alphanumeric characters, plus, slash, equals, dash, underscore, dot
+  return trimmedToken.length >= 5 && /^[A-Za-z0-9+/=_.-]+$/.test(trimmedToken);
 }
 
 /**
