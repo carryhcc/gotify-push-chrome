@@ -21,6 +21,10 @@ const translations = {
     'alertMinOneToken': 'Please add at least one valid Token',
     'defaultRemarkPrefix': 'Token',
     'popupTitle': 'Send Gotify Push',
+    'contextMenuConfigTitle': 'Context Menu Configuration',
+    'serverConfigTitle': 'Server Configuration',
+    'langOptionEn': 'English',
+    'langOptionZh': '简体中文',
     'envLabel': 'Environment:',
     'titleLabel': 'Title:',
     'titlePlaceholder': 'Enter push title... (Optional)',
@@ -79,6 +83,10 @@ const translations = {
     'alertMinOneToken': '请至少添加一个有效的Token',
     'defaultRemarkPrefix': 'Token',
     'popupTitle': '发送Gotify推送',
+    'contextMenuConfigTitle': '右键菜单配置',
+    'serverConfigTitle': '服务器配置',
+    'langOptionEn': 'English',
+    'langOptionZh': '简体中文',
     'envLabel': '推送环境:',
     'titleLabel': '标题:',
     'titlePlaceholder': '输入推送标题... (可选)',
@@ -125,7 +133,7 @@ const translations = {
  * @param {string} lang - 语言代码 (例如: 'en', 'zh_CN')
  * @returns {object} 应用的语言翻译对象
  */
-function applyTranslations(lang) {
+export function applyTranslations(lang) {
   const langStrings = translations[lang] || translations['en'];
   
   // 设置文档语言
@@ -154,7 +162,7 @@ function applyTranslations(lang) {
  * 初始化国际化，加载用户首选语言或自动检测
  * @returns {Promise<{lang: string, strings: object}>} 包含语言代码和翻译字符串的Promise
  */
-async function initI18n() {
+export async function initI18n() {
   return new Promise((resolve) => {
     chrome.storage.sync.get('userLang', (result) => {
       let lang = result.userLang;
@@ -167,4 +175,16 @@ async function initI18n() {
       resolve({ lang: lang, strings: strings });
     });
   });
+}
+
+// Expose for non-module consumers if needed
+if (typeof window !== 'undefined') {
+  window.applyTranslations = applyTranslations;
+  window.initI18n = initI18n;
+}
+
+// Expose functions to global scope for other non-module scripts
+if (typeof window !== 'undefined') {
+  window.initI18n = initI18n;
+  window.applyTranslations = applyTranslations;
 }

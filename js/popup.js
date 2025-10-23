@@ -2,7 +2,9 @@
  * popup.js - Gotify通知扩展的弹窗页面脚本
  */
 
-// 全局变量，用于存储当前语言的翻译
+import { initI18n } from './i18n.js';
+
+// 模块作用域变量，用于存储当前语言的翻译
 let i18nStrings = {};
 
 /**
@@ -79,7 +81,8 @@ function sendMessage() {
   
   // 获取服务器地址并发送请求
   chrome.storage.sync.get('gotifyUrl', function(result) {
-    const gotifyUrl = (result.gotifyUrl || 'http://127.0.0.1:8080').replace(/\/$/, '');
+  const defaultUrl = i18nStrings.serverAddressPlaceholder || 'http://127.0.0.1:8080';
+  const gotifyUrl = (result.gotifyUrl || defaultUrl).replace(/\/$/, '');
     const apiUrl = `${gotifyUrl}/message`;
     
     // 准备请求数据
@@ -114,7 +117,7 @@ function sendMessage() {
       }
       return response.json();
     })
-    .then(data => {
+    .then(_data => {
       showStatus(i18nStrings.statusSuccess, 'success');
       // 保存当前选择的token
       const selectedToken = document.getElementById('tokenSelect').value;

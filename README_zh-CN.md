@@ -4,6 +4,27 @@
 
 一个用于向Gotify服务器发送推送消息的Chrome浏览器插件。
 
+## 开发与构建
+
+项目已添加基本的开发工具配置：`eslint`、`prettier`、`esbuild` 和 CI 工作流。使用方法（在项目根目录执行）：
+
+```bash
+# 安装依赖
+npm ci
+
+# 本地构建（生产）
+npm run build
+
+# 本地构建（开发，包含 sourcemap）
+npm run build:dev
+
+# 代码风格与静态检查
+npm run lint
+npm run lint:fix
+npm run format
+```
+
+
 ## 功能特性
 
 - 配置Gotify服务器地址和多个Token

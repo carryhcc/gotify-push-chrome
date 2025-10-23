@@ -2,7 +2,9 @@
  * options.js - 选项页面的JavaScript逻辑
  */
 
-// 全局变量，用于存储当前语言的翻译字符串
+import { initI18n, applyTranslations } from './i18n.js';
+
+// 模块作用域变量，用于存储当前语言的翻译字符串
 let i18nStrings = {};
 
 /**
@@ -99,9 +101,9 @@ function deleteToken(button) {
  */
 function loadOptions() {
   chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuEnabled', 'contextMenuPriority', 'contextMenuToken'], function(result) {
-    // 设置默认值
-    const defaultUrl = 'http://127.0.0.1:8080';
-    document.getElementById('gotifyUrl').value = result.gotifyUrl || defaultUrl;
+      // 设置默认值，使用 i18n 中的 placeholder 值作为默认地址提示
+      const defaultUrl = i18nStrings.serverAddressPlaceholder || 'http://127.0.0.1:8080';
+      document.getElementById('gotifyUrl').value = result.gotifyUrl || defaultUrl;
     
     // 加载右键菜单开关状态，默认为false
     const contextMenuEnabled = result.contextMenuEnabled || false;
@@ -162,7 +164,7 @@ function saveOptions() {
   
   // 验证至少有一个有效的Token
   if (gotifyTokens.length === 0) {
-    alert(i18nStrings.alertMinOneToken || 'Please add at least one valid Token');
+    alert(i18nStrings.alertMinOneToken || chrome.i18n.getMessage('alertMinOneToken') || 'Please add at least one valid Token');
     return;
   }
   
@@ -177,10 +179,10 @@ function saveOptions() {
     contextMenuPriority: contextMenuPriority,
     contextMenuToken: contextMenuToken
   }, function() {
-    // 显示保存成功消息
-    const status = document.getElementById('status');
-    status.className = 'status success';
-    status.textContent = i18nStrings.saveSuccessMsg || 'Settings saved';
+  // 显示保存成功消息
+  const status = document.getElementById('status');
+  status.className = 'status success';
+  status.textContent = i18nStrings.saveSuccessMsg || chrome.i18n.getMessage('saveSuccessMsg') || 'Settings saved';
 
     // 通知background.js更新右键菜单
     chrome.runtime.sendMessage({

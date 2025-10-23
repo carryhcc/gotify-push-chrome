@@ -10,16 +10,29 @@ const CONTEXT_MENU_ID = "SEND_TO_GOTIFY";
  * 创建右键菜单
  */
 function createContextMenu() {
-  chrome.contextMenus.remove(CONTEXT_MENU_ID, () => {
-    // 忽略可能的错误（如菜单不存在）
-    void chrome.runtime.lastError;
-    
-    // 创建新的上下文菜单
-    chrome.contextMenus.create({
-      id: CONTEXT_MENU_ID,
-      title: chrome.i18n.getMessage("contextMenuTitle"),
-      contexts: ["selection"]
-    });
+  // 首先尝试 update（如果已存在则更新），如果不存在再创建。
+  chrome.contextMenus.update(CONTEXT_MENU_ID, {
+    id: CONTEXT_MENU_ID,
+    title: chrome.i18n.getMessage('contextMenuTitle'),
+    contexts: ['selection']
+  }, () => {
+    // 如果 update 失败（通常表示不存在），则尝试创建
+    if (chrome.runtime.lastError) {
+      // 最常见的错误是 item not found; 在这种情况下创建新菜单
+      chrome.contextMenus.create({
+        id: CONTEXT_MENU_ID,
+        title: chrome.i18n.getMessage('contextMenuTitle'),
+        contexts: ['selection']
+      }, () => {
+        // 在 create 回调中检查错误；如果是 duplicate id，安全忽略（可能并发创建）
+        if (chrome.runtime.lastError) {
+          const msg = String(chrome.runtime.lastError.message || '').toLowerCase();
+          if (!msg.includes('duplicate') && !msg.includes('already exists')) {
+            console.error('Failed to create context menu:', chrome.runtime.lastError);
+          }
+        }
+      });
+    }
   });
 }
 
@@ -59,7 +72,10 @@ async function sendPushFromBackground(title, message) {
     // 验证配置是否完整
     if (!gotifyUrl || !gotifyTokens || gotifyTokens.length === 0) {
       console.error('Gotify send failed: No URL or Tokens configured.');
-      showNotification('Gotify 推送失败', '请先在插件设置中配置服务器和Token');
+      // 使用 i18n 文本
+      const noConfigTitle = chrome.i18n.getMessage('notificationPushFailed') || 'Gotify Push Failed';
+      const noConfigMsg = chrome.i18n.getMessage('notificationNoConfig') || 'Please configure server and Token in plugin settings first';
+      showNotification(noConfigTitle, noConfigMsg);
       return;
     }
 
@@ -105,11 +121,15 @@ async function sendPushFromBackground(title, message) {
     })
     .then(data => {
       console.log('Gotify push success:', data);
-      showNotification('Gotify 推送成功', `标题: ${title}`);
+      const successTitle = chrome.i18n.getMessage('notificationPushSuccess') || 'Gotify Push Successful';
+      const message = chrome.i18n.getMessage('notificationWithTitle', [title]) || (`Title: ${title}`);
+      showNotification(successTitle, message);
     })
     .catch(error => {
       console.error('Gotify push failed:', error);
-      showNotification('Gotify 推送失败', `错误: ${error.message}. 请检查网络、URL或Token。`);
+      const failTitle = chrome.i18n.getMessage('notificationPushFailed') || 'Gotify Push Failed';
+      const message = chrome.i18n.getMessage('notificationError', [error.message]) || (`Error: ${error.message}. Please check network, URL, or Token.`);
+      showNotification(failTitle, message);
     });
   });
 }
@@ -120,18 +140,28 @@ async function sendPushFromBackground(title, message) {
  * @param {string} message - 通知内容
  */
 function showNotification(title, message) {
+  const iconUrl = chrome.runtime.getURL('icons/icon128.png');
   chrome.notifications.create({
     type: 'basic',
-    iconUrl: '../icons/icon128.png',
+    iconUrl: iconUrl,
     title: title,
     message: message
   });
 }
 
 // 事件监听器 - 浏览器启动时初始化
-chrome.runtime.onStartup.addListener(initializeContextMenu);
+// 在 service worker 的生命周期阶段初始化上下文菜单以确保在 MV3 中生效
+self.addEventListener('install', (_event) => {
+  // 在安装阶段尽快激活 service worker
+  self.skipWaiting();
+});
 
-// 事件监听器 - 插件安装/更新时初始化
+self.addEventListener('activate', (_event) => {
+  // 激活后初始化上下文菜单
+  initializeContextMenu();
+});
+
+// 同时监听 runtime.onInstalled 以处理扩展更新场景
 chrome.runtime.onInstalled.addListener(initializeContextMenu);
 
 // 事件监听器 - 处理来自options页面的菜单更新消息

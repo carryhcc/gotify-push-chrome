@@ -19,4 +19,63 @@
     "message": "服务器配置",
     "description": "服务器配置区域的标题"
   }
+  ,
+  "notificationPushSuccess": {
+    "message": "Gotify 推送成功",
+    "description": "Notification title for successful push"
+  },
+  "notificationPushFailed": {
+    "message": "Gotify 推送失败",
+    "description": "Notification title for failed push"
+  },
+  "notificationNoConfig": {
+    "message": "请先在插件设置中配置服务器和Token",
+    "description": "Message shown when no Gotify config is present"
+  },
+  "notificationWithTitle": {
+    "message": "标题: $1",
+    "description": "Notification message template that includes the title"
+  },
+  "notificationError": {
+    "message": "错误: $1. 请检查网络、URL或Token。",
+    "description": "Notification message template for errors with substitution"
+  }
+  ,
+  "defaultTitle": {
+    "message": "默认",
+    "description": "Default title used when user doesn't provide one"
+  },
+  "defaultRemarkPrefix": {
+    "message": "Token",
+    "description": "Prefix for generated token remark"
+  },
+  "tokenRemarkPlaceholder": {
+    "message": "推送环境",
+    "description": "Placeholder for token remark input"
+  },
+  "tokenTokenPlaceholder": {
+    "message": "输入Token...",
+    "description": "Placeholder for token input"
+  },
+  "deleteBtnText": {
+    "message": "删除",
+    "description": "Text for delete button"
+  },
+  "alertMinOneToken": {
+    "message": "请至少添加一个有效的Token",
+    "description": "Alert shown when no token is provided"
+  },
+  "saveSuccessMsg": {
+    "message": "配置已保存",
+    "description": "Message shown after saving settings"
+  }
+  ,
+  "langOptionEn": {
+    "message": "English",
+    "description": "Language option text"
+  },
+  "langOptionZh": {
+    "message": "简体中文",
+    "description": "Language option text"
+  }
 }
