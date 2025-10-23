@@ -135,18 +135,26 @@ export function validateConfig(config) {
   const errors = [];
 
   if (!isValidUrl(config.gotifyUrl)) {
-    errors.push('Valid Gotify server URL is required');
+    errors.push(
+      chrome.i18n.getMessage('validationUrlRequired') || 'Valid Gotify server URL is required'
+    );
   }
 
   if (!Array.isArray(config.gotifyTokens) || config.gotifyTokens.length === 0) {
-    errors.push('At least one token is required');
+    errors.push(
+      chrome.i18n.getMessage('validationAtLeastOneToken') || 'At least one token is required'
+    );
   } else {
     config.gotifyTokens.forEach((tokenInfo, index) => {
       if (!isNonEmptyString(tokenInfo.remark)) {
-        errors.push(`Token ${index + 1}: Remark is required`);
+        const remarkError =
+          chrome.i18n.getMessage('validationRemarkRequired') || 'Remark is required';
+        errors.push(`Token ${index + 1}: ${remarkError}`);
       }
       if (!isValidToken(tokenInfo.token)) {
-        errors.push(`Token ${index + 1}: Valid token is required`);
+        const tokenError =
+          chrome.i18n.getMessage('validationTokenRequired') || 'Valid token is required';
+        errors.push(`Token ${index + 1}: ${tokenError}`);
       }
     });
   }

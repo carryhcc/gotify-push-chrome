@@ -74,5 +74,25 @@
   "langOptionZh": {
     "message": "简体中文",
     "description": "Language option text"
+  },
+  "validationTokenRequired": {
+    "message": "请输入有效的Token",
+    "description": "Error message when token is invalid or empty"
+  },
+  "validationRemarkRequired": {
+    "message": "请输入环境名称",
+    "description": "Error message when remark is empty"
+  },
+  "validationUrlRequired": {
+    "message": "请输入有效的Gotify服务器地址",
+    "description": "Error message when server URL is invalid"
+  },
+  "validationAtLeastOneToken": {
+    "message": "至少需要一个Token",
+    "description": "Error message when no tokens are provided"
+  },
+  "validationTokenFormat": {
+    "message": "Token至少需要5个字符，只能包含字母、数字和符号(+, /, =, _, ., -)",
+    "description": "Detailed error message for token format validation"
   }
 }

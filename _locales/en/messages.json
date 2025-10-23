@@ -74,5 +74,25 @@
   "langOptionZh": {
     "message": "简体中文",
     "description": "Language option text"
+  },
+  "validationTokenRequired": {
+    "message": "Valid token is required",
+    "description": "Error message when token is invalid or empty"
+  },
+  "validationRemarkRequired": {
+    "message": "Environment name is required",
+    "description": "Error message when remark is empty"
+  },
+  "validationUrlRequired": {
+    "message": "Valid Gotify server URL is required",
+    "description": "Error message when server URL is invalid"
+  },
+  "validationAtLeastOneToken": {
+    "message": "At least one token is required",
+    "description": "Error message when no tokens are provided"
+  },
+  "validationTokenFormat": {
+    "message": "Token must be at least 5 characters and contain only letters, numbers, and symbols (+, /, =, _, ., -)",
+    "description": "Detailed error message for token format validation"
   }
 }

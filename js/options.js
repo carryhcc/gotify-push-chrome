@@ -246,16 +246,28 @@ function showFieldValidationErrors(errors) {
         const tokenItems = document.querySelectorAll('#tokenList .token-item');
         if (tokenItems[tokenIndex]) {
           const errorMessage = error.replace(/Token \d+:\s*/, ''); // Remove "Token X: " prefix
-          showFieldError(tokenItems[tokenIndex].querySelector('.token-input'), errorMessage);
+
+          // Check if it's a token format error and show more detailed message
+          if (
+            errorMessage.includes('Valid token is required') ||
+            errorMessage.includes('请输入有效的Token')
+          ) {
+            const detailedMessage =
+              chrome.i18n.getMessage('validationTokenFormat') ||
+              'Token must be at least 5 characters and contain only letters, numbers, and symbols (+, /, =, _, ., -)';
+            showFieldError(tokenItems[tokenIndex].querySelector('.token-input'), detailedMessage);
+          } else {
+            showFieldError(tokenItems[tokenIndex].querySelector('.token-input'), errorMessage);
+          }
         }
       }
-    } else if (error.includes('server URL')) {
+    } else if (error.includes('server URL') || error.includes('服务器地址')) {
       // Server URL validation error
       const urlField = document.getElementById('gotifyUrl');
       if (urlField) {
         showFieldError(urlField, error);
       }
-    } else if (error.includes('token is required')) {
+    } else if (error.includes('token is required') || error.includes('Token')) {
       // General token requirement error
       showStatusMessage(error, 'error');
     }
