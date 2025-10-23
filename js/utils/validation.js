@@ -129,31 +129,26 @@ export function validatePushForm(formData) {
  * @param {Object} config - Configuration object
  * @param {string} config.gotifyUrl - Gotify server URL
  * @param {Array} config.gotifyTokens - Array of token objects
+ * @param {Object} i18nStrings - Internationalization strings object
  * @returns {Object} Validation result with isValid and errors
  */
-export function validateConfig(config) {
+export function validateConfig(config, i18nStrings = {}) {
   const errors = [];
 
   if (!isValidUrl(config.gotifyUrl)) {
-    errors.push(
-      chrome.i18n.getMessage('validationUrlRequired') || 'Valid Gotify server URL is required'
-    );
+    errors.push(i18nStrings.validationUrlRequired || 'Valid Gotify server URL is required');
   }
 
   if (!Array.isArray(config.gotifyTokens) || config.gotifyTokens.length === 0) {
-    errors.push(
-      chrome.i18n.getMessage('validationAtLeastOneToken') || 'At least one token is required'
-    );
+    errors.push(i18nStrings.validationAtLeastOneToken || 'At least one token is required');
   } else {
     config.gotifyTokens.forEach((tokenInfo, index) => {
       if (!isNonEmptyString(tokenInfo.remark)) {
-        const remarkError =
-          chrome.i18n.getMessage('validationRemarkRequired') || 'Remark is required';
+        const remarkError = i18nStrings.validationRemarkRequired || 'Remark is required';
         errors.push(`Token ${index + 1}: ${remarkError}`);
       }
       if (!isValidToken(tokenInfo.token)) {
-        const tokenError =
-          chrome.i18n.getMessage('validationTokenRequired') || 'Valid token is required';
+        const tokenError = i18nStrings.validationTokenRequired || 'Valid token is required';
         errors.push(`Token ${index + 1}: ${tokenError}`);
       }
     });

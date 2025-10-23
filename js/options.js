@@ -184,7 +184,7 @@ async function saveOptions() {
 
     // Sanitize and validate configuration
     const sanitizedConfig = sanitizeConfiguration(config);
-    const validation = validateConfig(sanitizedConfig);
+    const validation = validateConfig(sanitizedConfig, i18nStrings);
 
     if (!validation.isValid) {
       // Show field-level validation errors instead of alert
@@ -253,7 +253,7 @@ function showFieldValidationErrors(errors) {
             errorMessage.includes('请输入有效的Token')
           ) {
             const detailedMessage =
-              chrome.i18n.getMessage('validationTokenFormat') ||
+              i18nStrings.validationTokenFormat ||
               'Token must be at least 5 characters and contain only letters, numbers, and symbols (+, /, =, _, ., -)';
             showFieldError(tokenItems[tokenIndex].querySelector('.token-input'), detailedMessage);
           } else {

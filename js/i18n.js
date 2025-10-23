@@ -64,6 +64,12 @@ const translations = {
     notificationErrorPrefix: 'Error: ',
     notificationErrorSuffix: '. Please check network, URL, or Token.',
     notificationTitlePrefix: 'Title: ',
+    validationTokenRequired: 'Valid token is required',
+    validationRemarkRequired: 'Environment name is required',
+    validationUrlRequired: 'Valid Gotify server URL is required',
+    validationAtLeastOneToken: 'At least one token is required',
+    validationTokenFormat:
+      'Token must be at least 5 characters and contain only letters, numbers, and symbols (+, /, =, _, ., -)',
   },
   zh_CN: {
     langName: '简体中文',
@@ -127,6 +133,11 @@ const translations = {
     notificationErrorPrefix: '错误: ',
     notificationErrorSuffix: '. 请检查网络、URL或Token。',
     notificationTitlePrefix: '标题: ',
+    validationTokenRequired: '请输入有效的Token',
+    validationRemarkRequired: '请输入环境名称',
+    validationUrlRequired: '请输入有效的Gotify服务器地址',
+    validationAtLeastOneToken: '至少需要一个Token',
+    validationTokenFormat: 'Token至少需要5个字符，只能包含字母、数字和符号(+, /, =, _, ., -)',
   },
 };
 
