@@ -137,7 +137,6 @@ async function run(dev) {
     } else {
       // Production build - minified and optimized
     }
-
   } catch (error) {
     // Build failed
     process.exit(1);
