@@ -12,7 +12,7 @@
   },
   "options_page": "html/options.html",
   "background": {
-    "service_worker": "js/background.js",
+    "service_worker": "background.js",
     "type": "module"
   },
   "permissions": [

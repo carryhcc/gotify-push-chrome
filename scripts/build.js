@@ -22,24 +22,36 @@ async function run(dev) {
   }
   fs.mkdirSync(outdir, { recursive: true });
 
+  const entryPoints = [];
   // bundle all js files under js/
   const jsDir = path.join(root, 'js');
   if (fs.existsSync(jsDir)) {
     const entries = fs.readdirSync(jsDir).filter((f) => f.endsWith('.js'));
     for (const entry of entries) {
-      const entryPath = path.join(jsDir, entry);
-      await build({
-        entryPoints: [entryPath],
-        bundle: true,
-        minify: !dev,
-        sourcemap: dev,
-        outfile: path.join(outdir, 'js', entry)
-      });
+      entryPoints.push(path.join(jsDir, entry));
+    }
+  }
+  // bundle all css files under css/
+  const cssDir = path.join(root, 'css');
+  if (fs.existsSync(cssDir)) {
+    const entries = fs.readdirSync(cssDir).filter((f) => f.endsWith('.css'));
+    for (const entry of entries) {
+      entryPoints.push(path.join(cssDir, entry));
     }
   }
 
+  await build({
+    entryPoints: entryPoints,
+    bundle: true,
+    minify: !dev,
+    sourcemap: dev,
+    outdir: outdir,
+    splitting: true,
+    format: 'esm'
+  });
+
   // Copy static assets
-  const staticPaths = ['html', 'css', 'icons', '_locales', 'manifest.json', 'LICENSE', 'README.md'];
+  const staticPaths = ['html', 'icons', '_locales', 'manifest.json', 'LICENSE', 'README.md'];
   for (const p of staticPaths) {
     const src = path.join(root, p);
     const dest = path.join(outdir, p);
