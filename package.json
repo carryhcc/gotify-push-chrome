@@ -16,7 +16,7 @@
     "build:dev": "node ./scripts/build.js --dev",
     "clean": "rimraf dist",
     "prebuild": "npm run lint && npm run format:check",
-    "postbuild": "npm run clean && echo 'Build artifacts cleaned'",
+    "postbuild": "echo 'Build completed'",
     "dev": "npm run build:dev && echo 'Development build complete'",
     "prod": "npm run prebuild && npm run build && echo 'Production build complete'",
     "validate": "node -e \"console.log('Validating extension...'); require('./scripts/build.js')\"",
