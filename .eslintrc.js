@@ -1,27 +1,53 @@
 module.exports = {
-  root: true,
   env: {
     browser: true,
-    node: true,
     es2021: true,
     webextensions: true,
   },
+  extends: ['eslint:recommended'],
   parserOptions: {
-    ecmaVersion: 2021,
+    ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  extends: ['eslint:recommended', 'plugin:import/recommended'],
-  plugins: ['import'],
   rules: {
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    'no-console': 'off',
-    // Chrome extension files are loaded in order via HTML/manifest - don't enforce import ordering
-    'import/order': 'off',
-  },
-};
+    // Code quality rules
+    'no-console': 'warn',
+    'no-debugger': 'error',
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-var': 'error',
+    'prefer-const': 'error',
+    'prefer-arrow-callback': 'error',
 
-// Declare globals exposed by separate non-module scripts
-module.exports.globals = {
-  initI18n: 'readonly',
-  applyTranslations: 'readonly',
+    // Code style rules (handled by Prettier)
+    indent: 'off',
+    quotes: 'off',
+    semi: 'off',
+    'comma-dangle': 'off',
+    'object-curly-spacing': 'off',
+    'array-bracket-spacing': 'off',
+
+    // Best practices
+    eqeqeq: ['error', 'always'],
+    'no-eval': 'error',
+    'no-implied-eval': 'error',
+    'no-new-func': 'error',
+    'no-script-url': 'error',
+    'no-sequences': 'error',
+    'no-throw-literal': 'error',
+    'no-unmodified-loop-condition': 'error',
+    'no-unused-expressions': 'error',
+    'no-useless-call': 'error',
+    'no-useless-concat': 'error',
+    'no-useless-return': 'error',
+    'prefer-promise-reject-errors': 'error',
+    radix: 'error',
+    yoda: 'error',
+
+    // Chrome extension specific
+    'no-undef': 'off', // Chrome APIs are global
+  },
+  globals: {
+    chrome: 'readonly',
+    browser: 'readonly',
+  },
 };

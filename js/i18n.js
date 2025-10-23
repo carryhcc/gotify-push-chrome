@@ -1,5 +1,5 @@
 /**
- * i18n.js - 国际化支持模块
+ * i18n.js - Internationalization support module
  */
 const translations = {
   en: {
@@ -131,17 +131,17 @@ const translations = {
 };
 
 /**
- * 将翻译应用到当前文档
- * @param {string} lang - 语言代码 (例如: 'en', 'zh_CN')
- * @returns {object} 应用的语言翻译对象
+ * Applies translations to current document
+ * @param {string} lang - Language code (e.g., 'en', 'zh_CN')
+ * @returns {object} Applied language translation object
  */
 export function applyTranslations(lang) {
   const langStrings = translations[lang] || translations['en'];
 
-  // 设置文档语言
+  // Set document language
   document.documentElement.lang = lang === 'zh_CN' ? 'zh-CN' : 'en';
 
-  // 翻译文本内容
+  // Translate text content
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
     if (langStrings[key]) {
@@ -149,7 +149,7 @@ export function applyTranslations(lang) {
     }
   });
 
-  // 翻译占位符
+  // Translate placeholders
   document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
     const key = el.getAttribute('data-i18n-placeholder');
     if (langStrings[key]) {
@@ -161,15 +161,15 @@ export function applyTranslations(lang) {
 }
 
 /**
- * 初始化国际化，加载用户首选语言或自动检测
- * @returns {Promise<{lang: string, strings: object}>} 包含语言代码和翻译字符串的Promise
+ * Initializes internationalization, loads user preferred language or auto-detects
+ * @returns {Promise<{lang: string, strings: object}>} Promise containing language code and translation strings
  */
 export async function initI18n() {
   return new Promise((resolve) => {
     chrome.storage.sync.get('userLang', (result) => {
       let lang = result.userLang;
       if (!lang) {
-        // 从浏览器语言猜测
+        // Guess from browser language
         const browserLang = navigator.language;
         lang = browserLang.startsWith('zh') ? 'zh_CN' : 'en';
       }
@@ -183,10 +183,4 @@ export async function initI18n() {
 if (typeof window !== 'undefined') {
   window.applyTranslations = applyTranslations;
   window.initI18n = initI18n;
-}
-
-// Expose functions to global scope for other non-module scripts
-if (typeof window !== 'undefined') {
-  window.initI18n = initI18n;
-  window.applyTranslations = applyTranslations;
 }
