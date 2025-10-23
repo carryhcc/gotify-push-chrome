@@ -12,7 +12,6 @@ const CONTEXT_MENU_ID = "SEND_TO_GOTIFY";
 function createContextMenu() {
   // 首先尝试 update（如果已存在则更新），如果不存在再创建。
   chrome.contextMenus.update(CONTEXT_MENU_ID, {
-    id: CONTEXT_MENU_ID,
     title: chrome.i18n.getMessage('contextMenuTitle'),
     contexts: ['selection']
   }, () => {
