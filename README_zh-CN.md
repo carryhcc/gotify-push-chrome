@@ -60,4 +60,4 @@ npm run format
 检查 GOTIFY_SERVER_CORS_ALLOWORIGINS 配置项是否正确设置。
 docker GOTIFY_SERVER_CORS_ALLOWORIGINS = - ".\*"
 
-chrome 商店发布插件还需要5美元 本地将就用下吧
+chrome 商店发布插件还需要 5 美元 本地将就用下吧
