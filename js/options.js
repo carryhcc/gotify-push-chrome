@@ -187,7 +187,8 @@ async function saveOptions() {
     const validation = validateConfig(sanitizedConfig);
 
     if (!validation.isValid) {
-      alert(validation.errors.join('\n'));
+      // Show field-level validation errors instead of alert
+      showFieldValidationErrors(validation.errors);
       return;
     }
 
@@ -228,6 +229,82 @@ async function saveOptions() {
 }
 
 /**
+ * Shows field-level validation errors
+ * @param {Array} errors - Array of error messages
+ */
+function showFieldValidationErrors(errors) {
+  // Clear previous validation errors
+  clearFieldValidationErrors();
+
+  errors.forEach((error) => {
+    // Parse error message to identify field
+    if (error.includes('Token') && error.includes(':')) {
+      // Token validation error - format: "Token X: Error message"
+      const tokenMatch = error.match(/Token (\d+):/);
+      if (tokenMatch) {
+        const tokenIndex = parseInt(tokenMatch[1], 10) - 1; // Convert to 0-based index
+        const tokenItems = document.querySelectorAll('#tokenList .token-item');
+        if (tokenItems[tokenIndex]) {
+          const errorMessage = error.replace(/Token \d+:\s*/, ''); // Remove "Token X: " prefix
+          showFieldError(tokenItems[tokenIndex].querySelector('.token-input'), errorMessage);
+        }
+      }
+    } else if (error.includes('server URL')) {
+      // Server URL validation error
+      const urlField = document.getElementById('gotifyUrl');
+      if (urlField) {
+        showFieldError(urlField, error);
+      }
+    } else if (error.includes('token is required')) {
+      // General token requirement error
+      showStatusMessage(error, 'error');
+    }
+  });
+}
+
+/**
+ * Clears all field validation errors
+ */
+function clearFieldValidationErrors() {
+  // Remove error classes and error messages
+  document.querySelectorAll('.error').forEach((field) => {
+    field.classList.remove('error');
+  });
+  document.querySelectorAll('.error-message').forEach((errorMsg) => {
+    errorMsg.remove();
+  });
+}
+
+/**
+ * Shows error message for a specific field
+ * @param {HTMLElement} field - The input field
+ * @param {string} message - Error message
+ */
+function showFieldError(field, message) {
+  if (!field) return;
+
+  // Add error class to field
+  field.classList.add('error');
+
+  // Remove existing error message for this field
+  const existingError = field.parentNode.querySelector('.error-message');
+  if (existingError) {
+    existingError.remove();
+  }
+
+  // Create error message element
+  const errorElement = document.createElement('div');
+  errorElement.className = 'error-message';
+  errorElement.textContent = message;
+  errorElement.style.color = 'var(--color-danger)';
+  errorElement.style.fontSize = 'var(--font-size-sm)';
+  errorElement.style.marginTop = 'var(--space-xs)';
+
+  // Insert error message after the field
+  field.parentNode.appendChild(errorElement);
+}
+
+/**
  * Page initialization function
  */
 async function initPage() {
@@ -257,6 +334,22 @@ async function initPage() {
   // Bind events
   document.querySelector('.add-btn').addEventListener('click', addToken);
   document.querySelector('.save-btn').addEventListener('click', saveOptions);
+
+  // Add real-time validation - clear errors when user types
+  document.addEventListener('input', (event) => {
+    if (
+      event.target.classList.contains('token-input') ||
+      event.target.classList.contains('remark-input') ||
+      event.target.id === 'gotifyUrl'
+    ) {
+      // Clear error state when user starts typing
+      event.target.classList.remove('error');
+      const errorMessage = event.target.parentNode.querySelector('.error-message');
+      if (errorMessage) {
+        errorMessage.remove();
+      }
+    }
+  });
 
   // Bind context menu toggle event
   const contextMenuToggle = document.getElementById('contextMenuEnabled');
