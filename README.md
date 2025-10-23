@@ -36,7 +36,8 @@ A Chrome browser extension for sending push messages to a Gotify server.
 
 During development, you can use Chrome Developer Tools to view the extension's logs and errors. To debug the popup, right-click on the popup window and select "Inspect".
 
-
 403 error handling
 Check if the GOTIFY_SERVER_CORS_ALLOWORIGINS configuration item is set correctly.
-docker GOTIFY_SERVER_CORS_ALLOWORIGINS = - ".*"
+docker GOTIFY_SERVER_CORS_ALLOWORIGINS = - ".\*"
+
+chrome store 5$

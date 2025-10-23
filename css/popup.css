@@ -1,175 +1,94 @@
-:root {
-  --color-primary: #007aff;
-  --color-primary-dark: #005bb5;
-  --color-success: #34c759;
-  --color-success-dark: #2da84a;
-  --color-danger: #ff3b30;
-  --color-bg-light: #f5f5f7;
-  --color-bg-card: #ffffff;
-  --color-text: #333;
-  --color-text-secondary: #666;
-  --color-border: #e0e0e0;
-  --color-border-light: #f0f0f0;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.12);
-  --border-radius-md: 8px;
-  --border-radius-sm: 5px;
-}
+/* Import shared styles */
+@import './variables.css';
+@import './base.css';
 
+/* Popup specific styles */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  width: 380px;
-  background-color: var(--color-bg-light);
-  color: var(--color-text);
+  width: var(--popup-width);
+  background-color: var(--color-bg-secondary);
 }
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background-color: var(--color-bg-card);
-  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--space-lg) var(--space-xl);
+  background-color: var(--color-bg-primary);
+  border-bottom: var(--border-width) solid var(--color-border-secondary);
 }
-h2 {
-  color: var(--color-text);
-  font-size: 18px;
-  font-weight: 600;
+
+.header h2 {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
   margin: 0;
 }
 
+/* Main content */
 #configForm {
-  padding: 20px;
+  padding: var(--space-xl);
 }
 
-.form-group {
-  margin-bottom: 16px;
-}
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-}
-select,
-input[type="text"],
-input[type="number"],
-textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  font-size: 15px;
-  box-sizing: border-box;
-  background-color: var(--color-bg-card);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-select:focus,
-input[type="text"]:focus,
-input[type="number"]:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
-}
-select {
-  height: 46px; /* 统一下拉框高度 */
-}
-textarea {
-  min-height: 120px;
-  resize: vertical;
-  font-family: inherit;
-}
-
-/* 标题和优先级的内联布局 */
+/* Form layout */
 .row {
   display: flex;
-  gap: 12px;
-}
-.row .form-group {
-  flex: 1; /* 均分空间 */
-}
-/* 优先级输入框宽度较小 */
-.row .form-group.priority {
-  flex: 0 0 100px; /* 固定宽度 */
+  gap: var(--space-md);
 }
 
+.row .form-group {
+  flex: 1;
+}
+
+.row .form-group.priority {
+  flex: 0 0 100px; /* Fixed width for priority */
+}
+
+/* Actions */
 .actions {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
 }
-.btn { /* 统一按钮样式 */
-  border: none;
-  padding: 12px;
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
+
 .send-btn {
   flex: 1;
   background-color: var(--color-success);
-  color: white;
+  color: var(--color-text-inverse);
   box-shadow: var(--shadow-sm);
 }
+
 .send-btn:hover {
   background-color: var(--color-success-dark);
 }
+
 .options-btn {
-  background-color: var(--color-bg-card);
+  background-color: var(--color-bg-primary);
   color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border-primary);
 }
+
 .options-btn:hover {
-  background-color: #f8f8f8;
-  border-color: #d0d0d0;
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-primary);
 }
-.status {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: var(--border-radius-sm);
-  font-size: 14px;
-  display: none;
-  text-align: center;
-  font-weight: 500;
-}
-.success {
-  background-color: #e6f7eb;
-  color: #228b22;
-  display: block;
-}
-.error {
-  background-color: #ffebee;
-  color: var(--color-danger);
-  display: block;
-}
-/* 为错误消息中的链接添加样式 */
-.error a {
-  color: var(--color-primary);
-  text-decoration: underline;
-  font-weight: 500;
-}
-.error a:hover {
-  color: var(--color-primary-dark);
-}
+/* No configuration message */
 .no-config {
-  padding: 24px 20px;
+  padding: var(--space-2xl) var(--space-xl);
   background-color: #fff8e1;
   color: #665200;
-  border-radius: var(--border-radius-md);
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
   text-align: center;
-  margin: 20px;
+  margin: var(--space-xl);
   box-shadow: var(--shadow-sm);
 }
+
 .no-config a {
   color: var(--color-primary);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
+
 .no-config a:hover {
   text-decoration: underline;
 }

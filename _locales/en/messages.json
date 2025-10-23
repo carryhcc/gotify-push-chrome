@@ -18,8 +18,7 @@
   "serverConfigTitle": {
     "message": "Server Configuration",
     "description": "Title for server configuration section"
-  }
-  ,
+  },
   "notificationPushSuccess": {
     "message": "Gotify Push Successful",
     "description": "Notification title for successful push"
@@ -39,8 +38,7 @@
   "notificationError": {
     "message": "Error: $1. Please check network, URL, or Token.",
     "description": "Notification message template for errors with substitution"
-  }
-  ,
+  },
   "defaultTitle": {
     "message": "default",
     "description": "Default title used when user doesn't provide one"
@@ -68,8 +66,7 @@
   "saveSuccessMsg": {
     "message": "Settings saved",
     "description": "Message shown after saving settings"
-  }
-  ,
+  },
   "langOptionEn": {
     "message": "English",
     "description": "Language option text"

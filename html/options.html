@@ -1,90 +1,100 @@
 <!DOCTYPE html>
-<html lang="en"> <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="optionsTitle">Gotify Push Tool - Settings</title>
-  <link rel="stylesheet" href="options.css">
-</head>
-<body>
-  <div class="header">
-    <h1 data-i18n="optionsTitle">Gotify推送工具配置</h1>
-    
-    <!-- 语言切换器移至右上角 -->
-    <div class="lang-switcher-group">
-      <label for="langSwitcher" data-i18n="langLabel">语言:</label>
-      <select id="langSwitcher">
-        <option value="en" data-i18n="langOptionEn">English</option>
-        <option value="zh_CN" data-i18n="langOptionZh">简体中文</option>
-      </select>
-    </div>
-  </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="optionsTitle">Gotify Push Tool - Settings</title>
+    <link rel="stylesheet" href="../css/variables.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/options.css" />
+  </head>
+  <body>
+    <div class="header">
+      <h1 data-i18n="optionsTitle">Gotify推送工具配置</h1>
 
-  <!-- 右键菜单配置卡片 -->
-  <div class="config-card">
-    <h2 data-i18n="contextMenuConfigTitle">右键菜单配置</h2>
-    
-    <div class="config-item flex-row">
-      <div class="flex-item toggle-item">
-        <div class="toggle-switch-group">
-          <label for="contextMenuEnabled" data-i18n="contextMenuLabel">开启右键发送</label>
-          <label class="switch">
-            <input type="checkbox" id="contextMenuEnabled">
-            <span class="slider"></span>
-          </label>
+      <!-- 语言切换器移至右上角 -->
+      <div class="lang-switcher-group">
+        <label for="langSwitcher" data-i18n="langLabel">语言:</label>
+        <select id="langSwitcher">
+          <option value="en" data-i18n="langOptionEn">English</option>
+          <option value="zh_CN" data-i18n="langOptionZh">简体中文</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 右键菜单配置卡片 -->
+    <div class="config-card">
+      <h2 data-i18n="contextMenuConfigTitle">右键菜单配置</h2>
+
+      <div class="config-item flex-row">
+        <div class="flex-item toggle-item">
+          <div class="toggle-switch-group">
+            <label for="contextMenuEnabled" data-i18n="contextMenuLabel">开启右键发送</label>
+            <label class="switch">
+              <input type="checkbox" id="contextMenuEnabled" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex-item priority-item">
+          <label for="contextMenuPriority" data-i18n="contextMenuPriorityLabel"
+            >右键推送优先级:</label
+          >
+          <select id="contextMenuPriority">
+            <option value="0" data-i18n="priorityOption0">0 (最低)</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected data-i18n="priorityOption5">5 (默认)</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10" data-i18n="priorityOption10">10 (最高)</option>
+          </select>
+        </div>
+
+        <div class="flex-item priority-item" id="contextMenuTokenContainer">
+          <label for="contextMenuToken" data-i18n="contextMenuTokenLabel">右键推送环境选择:</label>
+          <select id="contextMenuToken">
+            <!-- 选项将通过JS动态填充 -->
+          </select>
         </div>
       </div>
-      
-      <div class="flex-item priority-item">
-        <label for="contextMenuPriority" data-i18n="contextMenuPriorityLabel">右键推送优先级:</label>
-        <select id="contextMenuPriority">
-          <option value="0" data-i18n="priorityOption0">0 (最低)</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5" selected data-i18n="priorityOption5">5 (默认)</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10" data-i18n="priorityOption10">10 (最高)</option>
-        </select>
+    </div>
+
+    <!-- 服务器配置卡片 -->
+    <div class="config-card">
+      <h2 data-i18n="serverConfigTitle">服务器配置</h2>
+
+      <div class="config-item">
+        <label for="gotifyUrl" data-i18n="serverAddressLabel">Gotify服务器地址:</label>
+        <input
+          type="url"
+          id="gotifyUrl"
+          data-i18n-placeholder="serverAddressPlaceholder"
+          placeholder="http://127.0.0.1:8080"
+        />
       </div>
-      
-      <div class="flex-item priority-item" id="contextMenuTokenContainer">
-        <label for="contextMenuToken" data-i18n="contextMenuTokenLabel">右键推送环境选择:</label>
-        <select id="contextMenuToken">
-          <!-- 选项将通过JS动态填充 -->
-        </select>
+
+      <div class="config-item">
+        <label data-i18n="tokenListLabel">Gotify Token列表:</label>
+        <div id="tokenListHeader">
+          <div class="remark-header" data-i18n="tokenHeaderRemark">推送环境</div>
+          <div class="token-header" data-i18n="tokenHeaderToken">Token (必填)</div>
+          <div class="action-header" data-i18n="tokenHeaderAction">操作</div>
+        </div>
+        <div id="tokenList"></div>
+        <button class="btn add-btn" data-i18n="addTokenBtn">添加Token</button>
       </div>
     </div>
-  </div>
 
-  <!-- 服务器配置卡片 -->
-  <div class="config-card">
-    <h2 data-i18n="serverConfigTitle">服务器配置</h2>
-    
-    <div class="config-item">
-      <label for="gotifyUrl" data-i18n="serverAddressLabel">Gotify服务器地址:</label>
-      <input type="url" id="gotifyUrl" data-i18n-placeholder="serverAddressPlaceholder" placeholder="http://127.0.0.1:8080">
-    </div>
-    
-    <div class="config-item">
-      <label data-i18n="tokenListLabel">Gotify Token列表:</label>
-      <div id="tokenListHeader">
-        <div class="remark-header" data-i18n="tokenHeaderRemark">推送环境</div>
-        <div class="token-header" data-i18n="tokenHeaderToken">Token (必填)</div>
-        <div class="action-header" data-i18n="tokenHeaderAction">操作</div>
-      </div>
-      <div id="tokenList"></div>
-      <button class="btn add-btn" data-i18n="addTokenBtn">添加Token</button>
-    </div>
-  </div>
+    <button class="btn save-btn" data-i18n="saveBtn">保存配置</button>
 
-  <button class="btn save-btn" data-i18n="saveBtn">保存配置</button>
-  
-  <div id="status" class="status" data-i18n="saveSuccessMsg">配置已保存</div>
+    <div id="status" class="status" data-i18n="saveSuccessMsg">配置已保存</div>
 
-  <script type="module" src="options.js"></script>
-</body>
+    <script type="module" src="../js/options.js"></script>
+  </body>
 </html>
