@@ -40,3 +40,4 @@ During development, you can use Chrome Developer Tools to view the extension's l
 Check if the GOTIFY_SERVER_CORS_ALLOWORIGINS configuration item is set correctly.
 docker GOTIFY_SERVER_CORS_ALLOWORIGINS = - ".\*"
 
+chrome store 5$
