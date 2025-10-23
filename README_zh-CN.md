@@ -59,3 +59,5 @@ npm run format
 403 错误处理
 检查 GOTIFY_SERVER_CORS_ALLOWORIGINS 配置项是否正确设置。
 docker GOTIFY_SERVER_CORS_ALLOWORIGINS = - ".\*"
+
+chrome 商店发布插件还需要5美元 本地将就用下吧
