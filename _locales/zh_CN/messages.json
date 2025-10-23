@@ -18,8 +18,7 @@
   "serverConfigTitle": {
     "message": "服务器配置",
     "description": "服务器配置区域的标题"
-  }
-  ,
+  },
   "notificationPushSuccess": {
     "message": "Gotify 推送成功",
     "description": "Notification title for successful push"
@@ -39,8 +38,7 @@
   "notificationError": {
     "message": "错误: $1. 请检查网络、URL或Token。",
     "description": "Notification message template for errors with substitution"
-  }
-  ,
+  },
   "defaultTitle": {
     "message": "默认",
     "description": "Default title used when user doesn't provide one"
@@ -68,8 +66,7 @@
   "saveSuccessMsg": {
     "message": "配置已保存",
     "description": "Message shown after saving settings"
-  }
-  ,
+  },
   "langOptionEn": {
     "message": "English",
     "description": "Language option text"

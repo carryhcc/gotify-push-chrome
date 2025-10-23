@@ -33,7 +33,7 @@ async function run(dev) {
         bundle: true,
         minify: !dev,
         sourcemap: dev,
-        outfile: path.join(outdir, 'js', entry)
+        outfile: path.join(outdir, 'js', entry),
       });
     }
   }

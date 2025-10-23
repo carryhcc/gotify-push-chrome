@@ -4,35 +4,42 @@
  */
 
 // 上下文菜单ID常量
-const CONTEXT_MENU_ID = "SEND_TO_GOTIFY";
+const CONTEXT_MENU_ID = 'SEND_TO_GOTIFY';
 
 /**
  * 创建右键菜单
  */
 function createContextMenu() {
   // 首先尝试 update（如果已存在则更新），如果不存在再创建。
-  chrome.contextMenus.update(CONTEXT_MENU_ID, {
-    title: chrome.i18n.getMessage('contextMenuTitle'),
-    contexts: ['selection']
-  }, () => {
-    // 如果 update 失败（通常表示不存在），则尝试创建
-    if (chrome.runtime.lastError) {
-      // 最常见的错误是 item not found; 在这种情况下创建新菜单
-      chrome.contextMenus.create({
-        id: CONTEXT_MENU_ID,
-        title: chrome.i18n.getMessage('contextMenuTitle'),
-        contexts: ['selection']
-      }, () => {
-        // 在 create 回调中检查错误；如果是 duplicate id，安全忽略（可能并发创建）
-        if (chrome.runtime.lastError) {
-          const msg = String(chrome.runtime.lastError.message || '').toLowerCase();
-          if (!msg.includes('duplicate') && !msg.includes('already exists')) {
-            console.error('Failed to create context menu:', chrome.runtime.lastError);
+  chrome.contextMenus.update(
+    CONTEXT_MENU_ID,
+    {
+      title: chrome.i18n.getMessage('contextMenuTitle'),
+      contexts: ['selection'],
+    },
+    () => {
+      // 如果 update 失败（通常表示不存在），则尝试创建
+      if (chrome.runtime.lastError) {
+        // 最常见的错误是 item not found; 在这种情况下创建新菜单
+        chrome.contextMenus.create(
+          {
+            id: CONTEXT_MENU_ID,
+            title: chrome.i18n.getMessage('contextMenuTitle'),
+            contexts: ['selection'],
+          },
+          () => {
+            // 在 create 回调中检查错误；如果是 duplicate id，安全忽略（可能并发创建）
+            if (chrome.runtime.lastError) {
+              const msg = String(chrome.runtime.lastError.message || '').toLowerCase();
+              if (!msg.includes('duplicate') && !msg.includes('already exists')) {
+                console.error('Failed to create context menu:', chrome.runtime.lastError);
+              }
+            }
           }
-        }
-      });
+        );
+      }
     }
-  });
+  );
 }
 
 /**
@@ -65,72 +72,83 @@ function initializeContextMenu() {
  * @param {string} message - 通知内容
  */
 async function sendPushFromBackground(title, message) {
-  chrome.storage.sync.get(['gotifyUrl', 'gotifyTokens', 'contextMenuPriority', 'contextMenuToken'], (result) => {
-    const { gotifyUrl, gotifyTokens, contextMenuPriority, contextMenuToken } = result;
+  chrome.storage.sync.get(
+    ['gotifyUrl', 'gotifyTokens', 'contextMenuPriority', 'contextMenuToken'],
+    (result) => {
+      const { gotifyUrl, gotifyTokens, contextMenuPriority, contextMenuToken } = result;
 
-    // 验证配置是否完整
-    if (!gotifyUrl || !gotifyTokens || gotifyTokens.length === 0) {
-      console.error('Gotify send failed: No URL or Tokens configured.');
-      // 使用 i18n 文本
-      const noConfigTitle = chrome.i18n.getMessage('notificationPushFailed') || 'Gotify Push Failed';
-      const noConfigMsg = chrome.i18n.getMessage('notificationNoConfig') || 'Please configure server and Token in plugin settings first';
-      showNotification(noConfigTitle, noConfigMsg);
-      return;
-    }
-
-    // 验证并设置优先级
-    let pushPriority = contextMenuPriority;
-    if (typeof pushPriority !== 'number' || pushPriority < 0 || pushPriority > 10) {
-      pushPriority = 5; // 默认优先级
-    }
-
-    // 选择要使用的Token
-    let selectedToken = gotifyTokens[0].token;
-    if (contextMenuToken) {
-      const foundToken = gotifyTokens.find(tokenInfo => tokenInfo.token === contextMenuToken);
-      if (foundToken) {
-        selectedToken = foundToken.token;
+      // 验证配置是否完整
+      if (!gotifyUrl || !gotifyTokens || gotifyTokens.length === 0) {
+        console.error('Gotify send failed: No URL or Tokens configured.');
+        // 使用 i18n 文本
+        const noConfigTitle =
+          chrome.i18n.getMessage('notificationPushFailed') || 'Gotify Push Failed';
+        const noConfigMsg =
+          chrome.i18n.getMessage('notificationNoConfig') ||
+          'Please configure server and Token in plugin settings first';
+        showNotification(noConfigTitle, noConfigMsg);
+        return;
       }
-    }
 
-    // 构建API URL
-    const apiUrl = (gotifyUrl || '').replace(/\/$/, '') + '/message';
-
-    // 准备推送数据
-    const data = {
-      title: title,
-      message: message,
-      priority: pushPriority
-    };
-
-    // 发送请求到Gotify服务器
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Gotify-Key': selectedToken
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // 验证并设置优先级
+      let pushPriority = contextMenuPriority;
+      if (typeof pushPriority !== 'number' || pushPriority < 0 || pushPriority > 10) {
+        pushPriority = 5; // 默认优先级
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Gotify push success:', data);
-      const successTitle = chrome.i18n.getMessage('notificationPushSuccess') || 'Gotify Push Successful';
-      const message = chrome.i18n.getMessage('notificationWithTitle', [title]) || (`Title: ${title}`);
-      showNotification(successTitle, message);
-    })
-    .catch(error => {
-      console.error('Gotify push failed:', error);
-      const failTitle = chrome.i18n.getMessage('notificationPushFailed') || 'Gotify Push Failed';
-      const message = chrome.i18n.getMessage('notificationError', [error.message]) || (`Error: ${error.message}. Please check network, URL, or Token.`);
-      showNotification(failTitle, message);
-    });
-  });
+
+      // 选择要使用的Token
+      let selectedToken = gotifyTokens[0].token;
+      if (contextMenuToken) {
+        const foundToken = gotifyTokens.find((tokenInfo) => tokenInfo.token === contextMenuToken);
+        if (foundToken) {
+          selectedToken = foundToken.token;
+        }
+      }
+
+      // 构建API URL
+      const apiUrl = (gotifyUrl || '').replace(/\/$/, '') + '/message';
+
+      // 准备推送数据
+      const data = {
+        title: title,
+        message: message,
+        priority: pushPriority,
+      };
+
+      // 发送请求到Gotify服务器
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Gotify-Key': selectedToken,
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log('Gotify push success:', data);
+          const successTitle =
+            chrome.i18n.getMessage('notificationPushSuccess') || 'Gotify Push Successful';
+          const message =
+            chrome.i18n.getMessage('notificationWithTitle', [title]) || `Title: ${title}`;
+          showNotification(successTitle, message);
+        })
+        .catch((error) => {
+          console.error('Gotify push failed:', error);
+          const failTitle =
+            chrome.i18n.getMessage('notificationPushFailed') || 'Gotify Push Failed';
+          const message =
+            chrome.i18n.getMessage('notificationError', [error.message]) ||
+            `Error: ${error.message}. Please check network, URL, or Token.`;
+          showNotification(failTitle, message);
+        });
+    }
+  );
 }
 
 /**
@@ -144,7 +162,7 @@ function showNotification(title, message) {
     type: 'basic',
     iconUrl: iconUrl,
     title: title,
-    message: message
+    message: message,
   });
 }
 
@@ -171,7 +189,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else {
       removeContextMenu();
     }
-    sendResponse({status: "Context menu updated"});
+    sendResponse({ status: 'Context menu updated' });
   }
   return true; // 保持消息通道开放
 });
